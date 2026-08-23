@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require("../middlewares/auth.middleware");
-const {authorize}=require('../middlewares/role.middleware');
-const {createPurchase} = require('../controllers/purchase.controller');
+const {authenticate} = require('../middlewares/auth.middleware');
+const {authorize} = require('../middlewares/role.middleware');
+const {createPurchase,returnAllPurchases,returnUserPurchases} = require('../controllers/purchase.controller');
 
 
-router.post('/',authenticate,authorize('user'),createPurchase);
+router.post('/',authenticate, authorize('user'),createPurchase);
 
+router.get('/',authenticate, authorize('admin'),returnAllPurchases);
 
-// route.get('/',authenticate,authorize('admin'),returnAllPrurchase);
-// route.get('/:id',authenticate,authorize('admin'),returnOnePrurchase);
-// route.put('/:id',authenticate,authorize('admin'),returnPurchase);
+router.get('/user-purchases',authenticate, authorize('user'),returnUserPurchases);
+
 module.exports = router;

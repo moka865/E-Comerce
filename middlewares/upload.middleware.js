@@ -1,30 +1,30 @@
-const { error } = require("console");
-const multer = require("multer");
-const path = require("path");
+const multer = require('multer');
+const path = require('path');
 
-const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  const allowed = [".png", ".jpg", ".jpeg"];
+const fileFilter=(req,file,cb)=>{
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowed = ['.png','.jpg','.jpeg'];
+    if(!allowed.includes(ext)){
+        return cb(new Error('Only Images Allowed'),false);
+    }
+    cb(null,true);
+}
 
-  if (!allowed.includes(ext)) {
-    return cb(new Error("only Images Allowed"), false);
-  }
-  cb(null, true);
-};
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now + "-" + file.originalname);
-  },
+    destination:(req,file,cb)=>{
+cb(null, 'uploads')
+    },
+    filename:(req,file,cb)=>{
+        cb(null, Date.now() + '_' + file.originalname)
+    }
 });
 
-const MB = 1024 * 1024;
+const MB = 1024 * 1024
 
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: { fileSize: 2 * MB },
-});
-module.exports = { upload };
+const upload=multer({
+    storage,
+    fileFilter,
+    limits:{fileSize: MB * 2}
+})
+
+module.exports = {upload}

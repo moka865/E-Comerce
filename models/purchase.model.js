@@ -1,31 +1,31 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const purchaseSchema = new mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+const purchaseSchema = new mongoose.Schema({
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+        required:true
     },
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: true,
+    product:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Product',
+        required:true
     },
-    price: {
-      type: Number,
-      required: true,
+    price:{
+        type:Number,
+        required:true
     },
-    quantity: {
-      type: Number,
-      required: true,
-    },
-    purchaseAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  { timestamps: true },
-);
+    quantity:{
+        type:Number,
+        required:true,
 
-module.exports = mongoose.model("Purchase", purchaseSchema);
+    },
+    purchasedAt:{
+        type:Date,
+        default:Date.now
+    }
+},{
+    timestamps:true
+})
+
+module.exports = mongoose.model('Purchase',purchaseSchema);

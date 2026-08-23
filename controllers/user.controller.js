@@ -1,7 +1,7 @@
 const User= require('../models/user.model');
 
 exports.getAllUsers =  async (req,res)=>{
-const myUsers = await User.find();
+const myUsers = await User.find().select('-password');
 res.status(200).json({message:'users list',data:myUsers});
 }
 

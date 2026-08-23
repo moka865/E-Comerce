@@ -6,13 +6,12 @@ const productSchema= new mongoose.Schema({
     imgURL:String,
     stock:Number,
     slug:{
+        required:true,
         type:String,
          unique:true,
         trim:true,
         lowecase:true,
-        require:true
     }
-
 },{
     timestamps:true
 });
