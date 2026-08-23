@@ -16,21 +16,29 @@ exports.getSalesReport = async(req,res)=>{
     const summary = await Purchase.aggregate([
         {$match: matchStage},
         {
-            $group:{
-                _id:"$product",
-                totalQuantity:{$sum:'$quantity'},
-                totalSpent:{$sum:{$multiply:['$price','$quantity']}},
-                lastPurchaseDate:{$max:'$purchasedAt'}
+            $lookup:{
+                from:'users',
+                localField:'user',
+                foreignField:'_id',
+                as:'user'
             }
+        },
+        {
+            $unwind:'$user'
         },
         {
             $lookup:{
                 from:'products',
-                localField:'_id',
+                localField:'product',
                 foreignField:'_id',
                 as:'product'
             }
-        }
+        },
+        {
+            $unwind:'$product'
+        },
+
+        
     ]);
 
     console.log(summary);
