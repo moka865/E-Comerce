@@ -1,21 +1,18 @@
-const {createBackup} = require('../services/backup.service');
-const {restoreBackup} = require('../services/restore.service');
-exports.createBackup= (req,res)=>{
-   try{
-    createBackup()
-res.status(200).json({message:'backup ceated'})
-   }catch(err){
-res.status(500).json({error:err.message});
-   }
-}
+const { createBackup } = require('../services/backup.service');
+const { restoreBackup } = require('../services/restore.service');
+const catchAsync = require('../utilities/catchAsync.util');
 
-exports.restore=(req,res)=>{
-    try{
-    const folderName = req.body.folderName;
-    restoreBackup(folderName);
-    res.status(200).json({message:'backup restored '});
-    }
-    catch(err){
-        res.status(500).json({error:'restore error'})
-    }
-}
+exports.createBackup = catchAsync(async (req, res) => {
+  const backupPath = await createBackup();
+  res.status(200).json({ success: true, message: 'Backup created', data: { path: backupPath } });
+});
+
+exports.restore = catchAsync(async (req, res) => {
+  const { folderName } = req.body;
+  if (!folderName) {
+    return res.status(400).json({ success: false, message: 'folderName is required' });
+  }
+
+  await restoreBackup(folderName);
+  res.status(200).json({ success: true, message: 'Backup restored' });
+});

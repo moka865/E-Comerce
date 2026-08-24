@@ -1,15 +1,25 @@
-const express= require('express');
+const express = require('express');
 const router = express.Router();
-const {getAllUsers,createUser} = require('../controllers/user.controller')
-const {authenticate} = require('../middlewares/auth.middleware')
-const {authorize} = require('../middlewares/role.middleware');
+const userCtrl = require('../controllers/user.controller');
+const { authenticate } = require('../middlewares/auth.middleware');
+const { authorize } = require('../middlewares/role.middleware');
+const paginate = require('../middlewares/paginate.middleware');
+const validate = require('../middlewares/validate.middleware');
+const { validateObjectId } = require('../validators/common.validator');
+const { updateProfileRules, addAddressRules, updateAddressRules } = require('../validators/user.validator');
 
-router.post('/',createUser('user'));
+// Authenticated user profile
+router.patch('/profile', authenticate, updateProfileRules, validate, userCtrl.updateProfile);
+router.get('/addresses', authenticate, userCtrl.getAddresses);
+router.post('/addresses', authenticate, addAddressRules, validate, userCtrl.addAddress);
+router.patch('/addresses/:addressId', authenticate, updateAddressRules, validate, userCtrl.updateAddress);
+router.delete('/addresses/:addressId', authenticate, userCtrl.deleteAddress);
+router.patch('/addresses/:addressId/default', authenticate, userCtrl.setDefaultAddress);
 
-
-
-router.get('/',authenticate,authorize('admin'),getAllUsers);
-router.post('/admin',authenticate,authorize('admin'),createUser('admin'));
-
+// Admin
+router.get('/', authenticate, authorize('admin'), paginate, userCtrl.getAllUsers);
+router.get('/:id', authenticate, authorize('admin'), validateObjectId(), validate, userCtrl.getUserById);
+router.patch('/:id/block', authenticate, authorize('admin'), validateObjectId(), validate, userCtrl.blockUser);
+router.patch('/:id/unblock', authenticate, authorize('admin'), validateObjectId(), validate, userCtrl.unblockUser);
 
 module.exports = router;
