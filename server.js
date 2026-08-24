@@ -25,9 +25,7 @@ app.use('/api/v1/auth',require('./routes/auth.route'));
 app.use('/api/v1/user', require('./routes/user.route'));
 app.use('/api/v1/product',require('./routes/product.route'));
 app.use('/api/v1/purchase',require('./routes/purchase.route'));
-app.use('/api/v1/report',require('./routes/report.route'));
-
-
-
+app.use('/api/v1/report', require('./routes/report.route'));
+app.use('/api/v1/admin',require('./routes/admin.route'));
 
 app.listen(port,_=> console.log(`server started at port: ${port}`));
