@@ -1,0 +1,270 @@
+.hero-section {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  background: #141416 url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1920&q=85') center/cover no-repeat;
+  color: var(--white);
+  padding: var(--space-20) 0;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(20, 20, 22, 0.9) 30%, rgba(20, 20, 22, 0.4) 100%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+.hero-pretitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--border-color);
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.hero-title {
+  color: var(--white);
+  font-size: clamp(2.8rem, 5.5vw, 4.8rem);
+  font-weight: 400;
+  line-height: 1.12;
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.01em;
+}
+
+.hero-desc {
+  color: #ded9cd;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: var(--space-8);
+  max-width: 580px;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hero-ctas .btn-secondary {
+  color: var(--white);
+  border-color: var(--white);
+}
+
+.hero-ctas .btn-secondary:hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+.section {
+  padding: var(--space-16) 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--space-10);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 500;
+}
+
+.section-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+.category-card {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-6);
+  color: var(--white);
+}
+
+.category-card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform var(--transition-smooth);
+}
+
+.category-card:hover .category-card-bg {
+  transform: scale(1.06);
+}
+
+.category-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(20, 20, 22, 0.85) 15%, transparent 70%);
+}
+
+.category-card-content {
+  position: relative;
+  z-index: 2;
+}
+
+.cat-card-tag {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--border-color);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cat-card-title {
+  color: var(--white);
+  font-size: 1.4rem;
+  margin-bottom: 6px;
+}
+
+.cat-card-explore {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.philosophy-section {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-20) 0;
+  text-align: center;
+}
+
+.philosophy-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.philosophy-monogram {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  letter-spacing: 0.25em;
+  color: var(--border-color);
+  margin-bottom: var(--space-2);
+}
+
+.philosophy-pretitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+}
+
+.philosophy-quote {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.45;
+  margin-bottom: var(--space-6);
+}
+
+.philosophy-author {
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+  margin-top: var(--space-6);
+}
+
+.testimonial-card {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.testimonial-stars {
+  color: #eab308;
+  font-size: 1.1rem;
+  margin-bottom: var(--space-4);
+}
+
+.testimonial-msg {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: var(--space-6);
+}
+
+.testimonial-author {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-light);
+}
+
+.verified-badge {
+  font-size: 0.68rem;
+  color: var(--color-save);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+}

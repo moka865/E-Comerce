@@ -1,0 +1,140 @@
+<div class="admin-categories-page">
+  <div class="header-row">
+    <div>
+      <span class="sub-heading">CLASSIFICATION HIERARCHY</span>
+      <h1 class="page-heading">Categories &amp; Subcategories</h1>
+    </div>
+  </div>
+
+  <div class="cats-subcats-grid">
+    <div class="panel-box">
+      <div class="panel-header">
+        <h3>Atelier Categories</h3>
+        <span class="count-badge">{{ categories().length }} Total</span>
+      </div>
+
+      <form (submit)="onCreateCategory($event)" class="inline-add-form" novalidate>
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+          <input
+            type="text"
+            [(ngModel)]="newCategoryName"
+            name="catName"
+            placeholder="New Category Name (e.g. Footwear)"
+            class="input-text"
+            [class.has-error]="categorySubmitted() && !newCategoryName.trim()"
+            required
+          />
+          <span class="form-error" *ngIf="categorySubmitted() && !newCategoryName.trim()">
+            Category name is required
+          </span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm" style="align-self: flex-start;">Add</button>
+      </form>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Category Name</th>
+            <th>Slug</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of categories()">
+            <td><strong>{{ c.name }}</strong></td>
+            <td><small style="color: var(--text-muted);">{{ c.slug }}</small></td>
+            <td>
+              <span class="badge" [ngClass]="c.isActive ? 'badge-in-stock' : 'badge-out-stock'">
+                {{ c.isActive ? 'Active' : 'Archived' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-ghost btn-sm" (click)="onToggleCategory(c._id)">
+                Toggle
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-header">
+        <div>
+          <h3>Atelier Subcategories</h3>
+          <small style="color: var(--text-secondary);">Strictly associated with a parent category</small>
+        </div>
+        <span class="count-badge">{{ subcategories().length }} Total</span>
+      </div>
+
+      <form (submit)="onCreateSubcategory($event)" class="subcategory-create-form" novalidate>
+        <div class="form-row-2">
+          <div class="form-group" style="margin-bottom: 0;">
+            <input
+              type="text"
+              [(ngModel)]="newSubName"
+              name="subName"
+              placeholder="Subcategory Name (e.g. Silk Ties)"
+              class="input-text"
+              [class.has-error]="subcategorySubmitted() && !newSubName.trim()"
+              required
+            />
+            <span class="form-error" *ngIf="subcategorySubmitted() && !newSubName.trim()">
+              Subcategory name is required
+            </span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <select
+              [(ngModel)]="newSubParent"
+              name="parentCat"
+              class="select-control"
+              [class.has-error]="subcategorySubmitted() && !newSubParent"
+              required
+            >
+              <option value="" disabled>Select Parent Category</option>
+              <option *ngFor="let c of categories()" [value]="c._id">{{ c.name }}</option>
+            </select>
+            <span class="form-error" *ngIf="subcategorySubmitted() && !newSubParent">
+              Parent category is required
+            </span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm btn-full" style="margin-top: 8px;">
+          Create Subcategory
+        </button>
+      </form>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Subcategory</th>
+            <th>Parent Category</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of subcategories()">
+            <td><strong>{{ s.name }}</strong></td>
+            <td>
+              <span class="parent-chip">{{ getCategoryName(s.category) }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="s.isActive ? 'badge-in-stock' : 'badge-out-stock'">
+                {{ s.isActive ? 'Active' : 'Archived' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-ghost btn-sm" (click)="onToggleSubcategory(s._id)">
+                Toggle
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

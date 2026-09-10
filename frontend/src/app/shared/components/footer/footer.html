@@ -1,0 +1,71 @@
+<footer class="site-footer">
+  <div class="container-wide">
+    <div class="footer-newsletter-wrap">
+      <div>
+        <span class="footer-pretitle">THE ATELIER DISPATCH</span>
+        <h3 class="footer-heading">Private Inquiries &amp; Curated Drops</h3>
+        <p class="footer-text">
+          Subscribe to receive exclusive invitations to bespoke runway previews, archival collection releases, and private concierge appointments.
+        </p>
+      </div>
+      <form class="newsletter-form" (submit)="$event.preventDefault()">
+        <input type="email" placeholder="ENTER YOUR EMAIL FOR ATELIER ACCESS" class="newsletter-input" required />
+        <button type="submit" class="btn btn-primary btn-sm">Join Gazette</button>
+      </form>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-col">
+        <span class="footer-col-title">Maison Élégance</span>
+        <p class="footer-col-desc">
+          Bespoke craftsmanship, architectural geometry, and virgin Biella wool silhouettes conceived in our private atelier.
+        </p>
+        <div class="footer-address">
+          15 Kasr El Nil St, Downtown, Cairo<br>
+          Direct Concierge: +20 100 000 0000
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-col-title">Sartorial Collections</span>
+        <ul class="footer-links">
+          <li><a routerLink="/shop" [queryParams]="{ filter: 'new' }">New Silhouette Drops</a></li>
+          <li><a routerLink="/shop" [queryParams]="{ category: 'outerwear-coats' }">Cashmere &amp; Wool Outerwear</a></li>
+          <li><a routerLink="/shop" [queryParams]="{ category: 'architectural-tailoring' }">Architectural Tailoring</a></li>
+          <li><a routerLink="/shop" [queryParams]="{ category: 'luxury-knitwear' }">Mongolian Ribbed Knits</a></li>
+          <li><a routerLink="/shop" [queryParams]="{ category: 'selvedge-denim' }">Okayama Shuttle Loom Denim</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-col-title">Client Services</span>
+        <ul class="footer-links">
+          <li><a routerLink="/content/delivery_info">White-Glove Delivery Across Egypt</a></li>
+          <li><a routerLink="/content/policies">Atelier Guarantee &amp; 14-Day Returns</a></li>
+          <li><a routerLink="/content/faq">Frequently Asked Questions</a></li>
+          <li><a routerLink="/account">Client Order Tracking</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <span class="footer-col-title">Maison Philosophy</span>
+        <ul class="footer-links">
+          <li><a routerLink="/content/about">Our Sartorial Heritage</a></li>
+          <li><a routerLink="/content/about">Biella Mill Fabric Standards</a></li>
+          <li><a routerLink="/content/about">Sustainable Craftsmanship</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 MAISON ÉLÉGANCE. ALL RIGHTS RESERVED. CASH ON DELIVERY NATIONWIDE.</span>
+      <div class="footer-bottom-links">
+        <a routerLink="/content/policies">PRIVACY CHARTER</a>
+        <span>·</span>
+        <a routerLink="/content/policies">TERMS OF SALE</a>
+        <span>·</span>
+        <a routerLink="/content/delivery_info">LOGISTICS</a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,216 @@
+<div class="admin-products-page">
+  <div class="header-row">
+    <div>
+      <span class="sub-heading">CATALOG MANAGEMENT</span>
+      <h1 class="page-heading">Atelier Silhouettes Directory</h1>
+    </div>
+    <button class="btn btn-primary btn-sm" (click)="openCreateModal()">
+      + Add New Silhouette
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Piece</th>
+          <th>Category &amp; Subcategory</th>
+          <th>Season</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Status</th>
+          <th>Maison Select</th>
+          <th>New Edition</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products()">
+          <td>
+            <div class="prod-cell">
+              <img [src]="productService.getImageUrl(p.image)" alt="piece" class="admin-thumb" />
+              <div>
+                <strong>{{ p.name }}</strong><br>
+                <small style="color: var(--text-muted);">{{ p.slug }}</small>
+              </div>
+            </div>
+          </td>
+          <td>
+            {{ p.category?.name || '—' }}<br>
+            <small style="color: var(--text-secondary);">{{ p.subcategory?.name || '—' }}</small>
+          </td>
+          <td>{{ p.season?.name || 'Permanent' }}</td>
+          <td><strong>{{ p.price }} EGP</strong></td>
+          <td>
+            <span [class.text-danger]="p.stock === 0">
+              {{ p.stock }} units
+            </span>
+          </td>
+          <td>
+            <button
+              class="status-toggle-btn"
+              [class.active]="p.isActive"
+              (click)="onToggleActive(p._id)"
+            >
+              {{ p.isActive ? 'Active' : 'Archived' }}
+            </button>
+          </td>
+          <td>
+            <button
+              class="badge-toggle-btn"
+              [class.active]="p.isTopSale"
+              (click)="onToggleTopSale(p._id)"
+            >
+              {{ p.isTopSale ? '★ Top Sale' : 'Regular' }}
+            </button>
+          </td>
+          <td>
+            <button
+              class="badge-toggle-btn"
+              [class.active]="p.isNewArrival"
+              (click)="onToggleNewArrival(p._id)"
+            >
+              {{ p.isNewArrival ? '✦ New' : 'Standard' }}
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-ghost btn-sm delete-btn" (click)="onDeleteProduct(p._id)">
+              Delete
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="products().length === 0">
+          <td colspan="9" style="text-align: center; padding: 32px;">No pieces in catalog.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal-backdrop" [class.active]="modalOpen()" (click)="closeModal()">
+    <div class="modal-content create-prod-modal" (click)="$event.stopPropagation()">
+      <h3>Add New Atelier Silhouette</h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+        Populate all sartorial fields. Category and linked subcategory are strictly required.
+      </p>
+
+      <form (submit)="onSubmitCreate($event)" novalidate>
+        <div class="form-group">
+          <label class="form-label">Piece Name *</label>
+          <input
+            type="text"
+            [(ngModel)]="newProd.name"
+            name="name"
+            class="input-text"
+            [class.has-error]="formSubmitted() && !newProd.name.trim()"
+            required
+            maxlength="200"
+          />
+          <span class="form-error" *ngIf="formSubmitted() && !newProd.name.trim()">
+            Piece name is required
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Craftsmanship Description</label>
+          <textarea [(ngModel)]="newProd.description" name="desc" rows="3" class="textarea-control"></textarea>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Price (USD) *</label>
+            <input
+              type="number"
+              [(ngModel)]="newProd.price"
+              name="price"
+              class="input-text"
+              [class.has-error]="formSubmitted() && (newProd.price === null || newProd.price === undefined || newProd.price < 0)"
+              required
+              min="0"
+            />
+            <span class="form-error" *ngIf="formSubmitted() && (newProd.price === null || newProd.price === undefined || newProd.price < 0)">
+              Price is required and must be at least 0
+            </span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Atelier Stock Units *</label>
+            <input
+              type="number"
+              [(ngModel)]="newProd.stock"
+              name="stock"
+              class="input-text"
+              [class.has-error]="formSubmitted() && (newProd.stock === null || newProd.stock === undefined || newProd.stock < 0)"
+              required
+              min="0"
+            />
+            <span class="form-error" *ngIf="formSubmitted() && (newProd.stock === null || newProd.stock === undefined || newProd.stock < 0)">
+              Stock units is required and must be at least 0
+            </span>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Parent Category *</label>
+            <select
+              [(ngModel)]="newProd.category"
+              name="cat"
+              class="select-control"
+              [class.has-error]="formSubmitted() && !newProd.category"
+              required
+              (change)="onCategoryChange()"
+            >
+              <option value="" disabled>Select Category</option>
+              <option *ngFor="let c of categories()" [value]="c._id">{{ c.name }}</option>
+            </select>
+            <span class="form-error" *ngIf="formSubmitted() && !newProd.category">
+              Parent category is required
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subcategory *</label>
+            <select
+              [(ngModel)]="newProd.subcategory"
+              name="sub"
+              class="select-control"
+              [class.has-error]="formSubmitted() && !newProd.subcategory"
+              required
+              [disabled]="!newProd.category"
+            >
+              <option value="" disabled>Select Subcategory</option>
+              <option *ngFor="let s of scopedSubcategories()" [value]="s._id">{{ s.name }}</option>
+            </select>
+            <span class="form-error" *ngIf="formSubmitted() && !newProd.subcategory">
+              Subcategory is required
+            </span>
+            <small *ngIf="!newProd.category && !formSubmitted()" style="color: var(--text-muted); font-size: 0.72rem;">
+              Choose a parent category first.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Season / Epoch</label>
+            <select [(ngModel)]="newProd.season" name="sea" class="select-control">
+              <option value="">Permanent Archive</option>
+              <option *ngFor="let sea of seasons()" [value]="sea._id">{{ sea.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Silhouette Image</label>
+            <input type="file" (change)="onFileSelect($event)" accept="image/*" class="input-text" />
+          </div>
+        </div>
+
+        <div class="form-actions" style="margin-top: 24px;">
+          <button type="submit" class="btn btn-primary btn-sm" [disabled]="submitting()">
+            {{ submitting() ? 'Creating...' : 'Publish Silhouette' }}
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

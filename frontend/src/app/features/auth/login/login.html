@@ -1,0 +1,71 @@
+<div class="auth-page">
+  <div class="container-narrow">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="empty-monogram">M·É</div>
+        <span class="auth-pretitle">ATELIER CLIENTELE</span>
+        <h1 class="auth-title">Sign In to Your Account</h1>
+        <p class="auth-subtitle">Access your private acquisitions, bespoke order timelines, and saved addresses.</p>
+      </div>
+
+      <form (submit)="onLogin($event)" class="auth-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email *</label>
+          <input
+            id="login-email"
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="e.g. client@example.com"
+            class="input-text"
+            [class.has-error]="(touched.email || submitted()) && (!email.trim() || !isValidEmail(email))"
+            required
+            autocomplete="email"
+            (blur)="touched.email = true"
+          />
+          <span class="form-error" *ngIf="(touched.email || submitted()) && !email.trim()">
+            Email is required.
+          </span>
+          <span class="form-error" *ngIf="(touched.email || submitted()) && email.trim() && !isValidEmail(email)">
+            Please enter a valid email address.
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password *</label>
+          <input
+            id="login-password"
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="••••••••"
+            class="input-text"
+            [class.has-error]="(touched.password || submitted()) && !password"
+            required
+            autocomplete="current-password"
+            (blur)="touched.password = true"
+          />
+          <span class="form-error" *ngIf="(touched.password || submitted()) && !password">
+            Password is required.
+          </span>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-full btn-lg"
+          [disabled]="loading()"
+        >
+          <span *ngIf="!loading()">Enter Atelier</span>
+          <span *ngIf="loading()">Authenticating...</span>
+        </button>
+      </form>
+
+      <div class="auth-footer-prompt">
+        <span>New to Maison Élégance?</span>
+        <a routerLink="/auth/register" [queryParams]="{ returnUrl: returnUrl }">
+          Create an Atelier Account &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

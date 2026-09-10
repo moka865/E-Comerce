@@ -1,0 +1,241 @@
+<div class="checkout-page">
+  <div class="container-wide">
+    <div *ngIf="confirmedOrder()" class="order-confirmed-box">
+      <div class="confirm-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <span class="confirm-pretitle">ACQUISITION CONFIRMED</span>
+      <h1 class="confirm-title">Order #{{ confirmedOrder()?._id?.slice(-8)?.toUpperCase() }}</h1>
+      <p class="confirm-desc">
+        Your atelier order has been placed into white-glove fulfillment. Our private courier will contact you prior to delivery. Payment of <strong>{{ confirmedOrder()?.totalPrice }} EGP</strong> will be collected via Cash on Delivery.
+      </p>
+
+      <div class="confirm-actions">
+        <a routerLink="/account" [queryParams]="{ tab: 'orders' }" class="btn btn-primary btn-lg">
+          Track Order in Client Account
+        </a>
+        <a routerLink="/shop" class="btn btn-secondary btn-lg">
+          Return to Silhouettes Catalog
+        </a>
+      </div>
+    </div>
+
+    <div *ngIf="!confirmedOrder()">
+      <div class="checkout-header">
+        <div class="breadcrumbs">
+          <a routerLink="/">Maison</a> &gt; <a routerLink="/cart">Bag</a> &gt; <span>Checkout</span>
+        </div>
+        <h1 class="checkout-title">White-Glove Delivery Fulfillment</h1>
+      </div>
+
+      <div *ngIf="!authService.isAuthenticated()" class="auth-gate-panel">
+        <div class="empty-monogram">M·É</div>
+        <h3>Client Authentication Required</h3>
+        <p>To establish your delivery dispatch and white-glove atelier tracking, please sign in or register.</p>
+        <div class="auth-gate-ctas">
+          <a routerLink="/auth/login" [queryParams]="{ returnUrl: '/checkout' }" class="btn btn-primary">
+            Client Sign In
+          </a>
+          <a routerLink="/auth/register" [queryParams]="{ returnUrl: '/checkout' }" class="btn btn-secondary">
+            Create Atelier Account
+          </a>
+        </div>
+      </div>
+
+      <div class="checkout-grid" *ngIf="authService.isAuthenticated()">
+        <div class="checkout-main-panel">
+          <section class="checkout-section">
+            <div class="section-title-row">
+              <h3 class="section-step-title">1. Select Destination Address</h3>
+              <button class="btn btn-ghost btn-sm" (click)="toggleNewAddressForm()">
+                {{ showNewAddressForm() ? 'Close Form' : '+ New Address' }}
+              </button>
+            </div>
+
+            <div class="address-cards-grid" *ngIf="addresses().length > 0 && !showNewAddressForm()">
+              <div
+                *ngFor="let addr of addresses()"
+                class="address-card"
+                [class.selected]="selectedAddressId() === addr._id"
+                (click)="selectAddress(addr)"
+              >
+                <div class="address-card-header">
+                  <strong>{{ addr.governorate }} · {{ addr.city }}</strong>
+                  <span *ngIf="addr.isDefault" class="default-chip">Default</span>
+                </div>
+                <div class="address-text">{{ addr.address }}</div>
+                <div class="address-details" *ngIf="addr.buildingDetails">{{ addr.buildingDetails }}</div>
+                <div class="address-fee-indicator">
+                  Delivery Fee: <strong>{{ getFeeForGovernorate(addr.governorate) }} EGP</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="new-address-form-box" *ngIf="showNewAddressForm() || addresses().length === 0">
+              <h4 class="form-box-title">Add Egyptian Delivery Destination</h4>
+              <form (submit)="onSaveNewAddress($event)" novalidate>
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Governorate *</label>
+                    <select
+                      [(ngModel)]="newAddress.governorate"
+                      name="governorate"
+                      class="select-control"
+                      [class.has-error]="(addressTouched.governorate || addressFormSubmitted()) && !newAddress.governorate"
+                      required
+                      (change)="onGovernorateSelect()"
+                      (blur)="addressTouched.governorate = true"
+                    >
+                      <option value="" disabled>Select Governorate</option>
+                      <option *ngFor="let f of deliveryFees()" [value]="f.governorate">
+                        {{ f.governorate }} (Fee: {{ f.fee }} EGP)
+                      </option>
+                    </select>
+                    <span class="form-error" *ngIf="(addressTouched.governorate || addressFormSubmitted()) && !newAddress.governorate">
+                      Governorate is required
+                    </span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">City / District *</label>
+                    <input
+                      type="text"
+                      [(ngModel)]="newAddress.city"
+                      name="city"
+                      placeholder="e.g. Zamalek, Maadi, Smouha"
+                      class="input-text"
+                      [class.has-error]="(addressTouched.city || addressFormSubmitted()) && !newAddress.city.trim()"
+                      required
+                      (blur)="addressTouched.city = true"
+                    />
+                    <span class="form-error" *ngIf="(addressTouched.city || addressFormSubmitted()) && !newAddress.city.trim()">
+                      City / District is required
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Street Address *</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="newAddress.address"
+                    name="address"
+                    placeholder="Street name, building number"
+                    class="input-text"
+                    [class.has-error]="(addressTouched.address || addressFormSubmitted()) && !newAddress.address.trim()"
+                    required
+                    (blur)="addressTouched.address = true"
+                  />
+                  <span class="form-error" *ngIf="(addressTouched.address || addressFormSubmitted()) && !newAddress.address.trim()">
+                    Street address is required
+                  </span>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Area / Landmark</label>
+                    <input
+                      type="text"
+                      [(ngModel)]="newAddress.area"
+                      name="area"
+                      placeholder="e.g. Near Gezira Club"
+                      class="input-text"
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Building Details / Apartment</label>
+                    <input
+                      type="text"
+                      [(ngModel)]="newAddress.buildingDetails"
+                      name="buildingDetails"
+                      placeholder="Floor 4, Apt 12"
+                      class="input-text"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary btn-sm" [disabled]="submittingAddress()">
+                    Save &amp; Select Address
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    (click)="showNewAddressForm.set(false)"
+                    *ngIf="addresses().length > 0"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <section class="checkout-section" style="margin-top: var(--space-8);">
+            <h3 class="section-step-title">2. Payment Method</h3>
+            <div class="cod-option-card">
+              <div class="cod-header">
+                <input type="radio" checked disabled />
+                <strong>Cash on Delivery (COD)</strong>
+              </div>
+              <p class="cod-desc">
+                Maison Élégance courier collects full payment upon arrival. You have the right to inspect all silhouettes and seals before remitting payment to the courier.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <aside class="checkout-summary-panel">
+          <h3 class="summary-heading">Order Summary</h3>
+
+          <div class="summary-items-list">
+            <div *ngFor="let item of cartService.items()" class="summary-item-row">
+              <span class="item-name">{{ item.product?.name }} &times; {{ item.quantity }}</span>
+              <span class="item-val">{{ (item.priceAtCart || item.product?.price || 0) * item.quantity }} EGP</span>
+            </div>
+          </div>
+
+          <div class="summary-calc-rows">
+            <div class="calc-row">
+              <span>Silhouettes Subtotal</span>
+              <span>{{ cartService.totalPrice() }} EGP</span>
+            </div>
+
+            <div class="calc-row">
+              <span>White-Glove Delivery</span>
+              <span>{{ currentDeliveryFee() }} EGP</span>
+            </div>
+
+            <div class="calc-row grand-total-row">
+              <span>Total Due</span>
+              <span class="grand-total-val">{{ grandTotal() }} EGP</span>
+            </div>
+          </div>
+
+          <button
+            class="btn btn-primary btn-full btn-lg confirm-order-btn"
+            [disabled]="!selectedAddressId() || placingOrder() || cartService.items().length === 0"
+            (click)="placeOrder()"
+          >
+            <span *ngIf="!placingOrder()">Confirm Acquisition — {{ grandTotal() }} EGP</span>
+            <span *ngIf="placingOrder()">Dispatches in Progress...</span>
+          </button>
+
+          <div class="guarantee-box">
+            <div class="guarantee-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>14-Day Compliant Atelier Refund Guarantee</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>

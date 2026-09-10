@@ -1,8 +1,0 @@
-24-08-2026 14:54:32 | ERROR | 500 - next is not a function
-TypeError: next is not a function
-    at model.<anonymous> (D:\NTI JS\Level 2\store\Backend\storeAPI\models\user.model.js:83:3)
-    at async Kareem.execPre (D:\NTI JS\Level 2\store\Backend\storeAPI\node_modules\kareem\index.js:61:24)
-    at async model.$__save (D:\NTI JS\Level 2\store\Backend\storeAPI\node_modules\mongoose\lib\model.js:403:5)
-    at async maybeTracedSave (D:\NTI JS\Level 2\store\Backend\storeAPI\node_modules\mongoose\lib\model.js:676:7)
-    at async model.create (D:\NTI JS\Level 2\store\Backend\storeAPI\node_modules\mongoose\lib\model.js:2764:5)
-    at async D:\NTI JS\Level 2\store\Backend\storeAPI\controllers\auth.controller.js:25:16

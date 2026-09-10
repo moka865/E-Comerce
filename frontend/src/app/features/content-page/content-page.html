@@ -1,0 +1,26 @@
+<div class="content-page-wrap">
+  <div class="container-narrow">
+    <div class="breadcrumbs">
+      <a routerLink="/">Maison</a> &gt; <span>Atelier Gazette</span>
+    </div>
+
+    <div *ngIf="loading()" class="skeleton" style="height: 400px;"></div>
+
+    <article *ngIf="!loading() && content()" class="content-article">
+      <div class="article-monogram">M·É</div>
+      <span class="article-key">MAISON ATELIER CHARTER</span>
+      <h1 class="article-title">{{ content()?.title }}</h1>
+
+      <div class="article-body">
+        <p *ngFor="let paragraph of getParagraphs(content()?.body)">
+          {{ paragraph }}
+        </p>
+      </div>
+
+      <div class="article-footer">
+        <a routerLink="/shop" class="btn btn-primary btn-sm">Explore Atelier Collections</a>
+        <a routerLink="/" class="btn btn-secondary btn-sm">Return Home</a>
+      </div>
+    </article>
+  </div>
+</div>

@@ -1,0 +1,148 @@
+<div class="announcement-bar">
+  <span>MAISON ÉLÉGANCE — COMPLIMENTARY WHITE-GLOVE DELIVERY ACROSS ALL 27 GOVERNORATES</span>
+</div>
+
+<header class="navbar" [class.scrolled]="isScrolled()">
+  <div class="container-wide navbar-inner">
+
+    <button class="nav-icon-btn mobile-menu-btn" (click)="toggleMobileMenu()" aria-label="Toggle Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <a routerLink="/" class="nav-brand">
+      MAISON ÉLÉGANCE
+    </a>
+
+    <nav class="nav-links">
+      <a routerLink="/shop" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        All Silhouettes
+      </a>
+
+      <div
+        *ngFor="let cat of categories()"
+        class="nav-category-item"
+        (mouseenter)="setActiveCategory(cat._id)"
+        (mouseleave)="setActiveCategory(null)"
+      >
+        <a [routerLink]="['/shop']" [queryParams]="{ category: cat._id }" class="nav-link">
+          {{ cat.name }}
+        </a>
+
+        <div class="subcategory-dropdown" *ngIf="activeCategory() === cat._id && getSubcategoriesFor(cat._id).length > 0">
+          <div class="dropdown-inner">
+            <span class="dropdown-heading">Subcategories</span>
+            <a
+              *ngFor="let sub of getSubcategoriesFor(cat._id)"
+              [routerLink]="['/shop']"
+              [queryParams]="{ category: cat._id, subcategory: sub._id }"
+              class="subcategory-link"
+            >
+              {{ sub.name }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <a routerLink="/content/about" routerLinkActive="active">
+        Atelier
+      </a>
+    </nav>
+
+    <div class="nav-actions">
+
+      <button class="nav-icon-btn" (click)="openSearch()" title="Search Creations">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+
+      <div class="account-menu-wrap" (mouseenter)="isAccountHovered.set(true)" (mouseleave)="isAccountHovered.set(false)">
+        <button class="nav-icon-btn" [routerLink]="authService.isAuthenticated() ? '/account' : '/auth/login'" title="Client Account">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        <div class="account-dropdown" *ngIf="authService.isAuthenticated() && isAccountHovered()">
+          <div class="account-dropdown-header">
+            <strong>{{ authService.currentUser()?.name }}</strong>
+            <span class="user-role-badge" *ngIf="authService.isAdmin()">Admin</span>
+          </div>
+          <a routerLink="/account" class="dropdown-link">Client Account</a>
+          <a routerLink="/account" [queryParams]="{ tab: 'orders' }" class="dropdown-link">Order History</a>
+          <a *ngIf="authService.isAdmin()" routerLink="/admin" class="dropdown-link admin-link">Atelier Dashboard</a>
+          <button (click)="authService.logout()" class="dropdown-link logout-btn">Sign Out</button>
+        </div>
+      </div>
+
+      <button class="nav-icon-btn bag-btn" (click)="cartService.openDrawer()" title="View Bag">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span class="bag-count" *ngIf="cartService.totalCount() > 0">
+          {{ cartService.totalCount() }}
+        </span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<div class="mobile-drawer-backdrop" [class.open]="mobileMenuOpen()" (click)="closeMobileMenu()">
+  <div class="mobile-drawer-panel" (click)="$event.stopPropagation()">
+    <div class="mobile-drawer-header">
+      <span class="nav-brand">MAISON ÉLÉGANCE</span>
+      <button class="nav-icon-btn" (click)="closeMobileMenu()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="mobile-drawer-links">
+      <a routerLink="/shop" (click)="closeMobileMenu()">All Silhouettes</a>
+
+      <div *ngFor="let cat of categories()" class="mobile-category-block">
+        <a [routerLink]="['/shop']" [queryParams]="{ category: cat._id }" (click)="closeMobileMenu()" class="cat-title">
+          {{ cat.name }}
+        </a>
+        <div class="mobile-subcategories">
+          <a
+            *ngFor="let sub of getSubcategoriesFor(cat._id)"
+            [routerLink]="['/shop']"
+            [queryParams]="{ category: cat._id, subcategory: sub._id }"
+            (click)="closeMobileMenu()"
+          >
+            {{ sub.name }}
+          </a>
+        </div>
+      </div>
+
+      <a routerLink="/content/about" (click)="closeMobileMenu()">Atelier Heritage</a>
+      <a routerLink="/content/faq" (click)="closeMobileMenu()">Frequently Asked Questions</a>
+      <a routerLink="/content/delivery_info" (click)="closeMobileMenu()">White-Glove Delivery</a>
+
+      <div class="mobile-drawer-footer">
+        <ng-container *ngIf="authService.isAuthenticated(); else guestLinks">
+          <div class="mobile-user-greeting">Signed in as {{ authService.currentUser()?.name }}</div>
+          <a routerLink="/account" (click)="closeMobileMenu()" class="btn btn-outline btn-full btn-sm">Client Account</a>
+          <a *ngIf="authService.isAdmin()" routerLink="/admin" (click)="closeMobileMenu()" class="btn btn-primary btn-full btn-sm" style="margin-top: 8px;">Admin Dashboard</a>
+          <button (click)="authService.logout(); closeMobileMenu()" class="btn btn-ghost btn-full btn-sm" style="margin-top: 8px;">Sign Out</button>
+        </ng-container>
+        <ng-template #guestLinks>
+          <a routerLink="/auth/login" (click)="closeMobileMenu()" class="btn btn-primary btn-full btn-sm">Client Sign In</a>
+          <a routerLink="/auth/register" (click)="closeMobileMenu()" class="btn btn-secondary btn-full btn-sm" style="margin-top: 8px;">Create Atelier Account</a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

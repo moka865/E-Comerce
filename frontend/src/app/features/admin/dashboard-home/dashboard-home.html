@@ -1,0 +1,79 @@
+<div class="dashboard-home">
+  <div class="page-heading-row">
+    <div>
+      <span class="sub-heading">PERFORMANCE METRICS</span>
+      <h1 class="page-heading">Atelier Executive Summary</h1>
+    </div>
+  </div>
+
+  <div class="stat-cards-grid">
+    <div class="stat-card">
+      <span class="stat-title">Gross Revenue</span>
+      <span class="stat-val">{{ revenueStats() }} EGP</span>
+      <span class="stat-sub">From received acquisitions</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-title">Total Orders</span>
+      <span class="stat-val">{{ totalOrders() }}</span>
+      <span class="stat-sub">All order statuses</span>
+    </div>
+
+    <div class="stat-card">
+      <span class="stat-title">Runway Impressions</span>
+      <span class="stat-val">{{ totalEvents() }}</span>
+      <span class="stat-sub">Tracked silhouette views</span>
+    </div>
+  </div>
+
+  <div class="analytics-tables-grid">
+    <div class="analytics-card">
+      <h3 class="card-title">Top Performing Silhouettes</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Piece</th>
+            <th>Quantity Dispatched</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of topProducts()">
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ p.totalQuantity }}</td>
+            <td><strong>{{ p.totalRevenue }} EGP</strong></td>
+          </tr>
+          <tr *ngIf="topProducts().length === 0">
+            <td colspan="3" style="text-align: center; color: var(--text-muted);">No revenue orders confirmed yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="analytics-card">
+      <h3 class="card-title">Prominent Atelier Patrons</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Patron</th>
+            <th>Acquisitions</th>
+            <th>Total Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of topCustomers()">
+            <td>
+              <strong>{{ c.name }}</strong><br>
+              <small style="color: var(--text-muted);">{{ c.email }}</small>
+            </td>
+            <td>{{ c.totalOrders }}</td>
+            <td><strong>{{ c.totalSpent }} EGP</strong></td>
+          </tr>
+          <tr *ngIf="topCustomers().length === 0">
+            <td colspan="3" style="text-align: center; color: var(--text-muted);">No customer purchases confirmed yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

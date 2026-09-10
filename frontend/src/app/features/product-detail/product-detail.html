@@ -1,0 +1,150 @@
+<div class="product-detail-page" *ngIf="product(); else loadingOrNotFound">
+  <div class="container-wide breadcrumbs-bar">
+    <a routerLink="/">Maison</a> &gt;
+    <a routerLink="/shop">Catalog</a> &gt;
+    <a [routerLink]="['/shop']" [queryParams]="{ category: product()?.category?._id }">
+      {{ product()?.category?.name }}
+    </a> &gt;
+    <a [routerLink]="['/shop']" [queryParams]="{ category: product()?.category?._id, subcategory: product()?.subcategory?._id }">
+      {{ product()?.subcategory?.name }}
+    </a> &gt;
+    <span class="active-crumb">{{ product()?.name }}</span>
+  </div>
+
+  <div class="container-wide piece-grid">
+    <div class="piece-visual-wrap">
+      <div class="piece-img-container">
+        <img
+          [src]="productService.getImageUrl(product()?.image)"
+          [alt]="product()?.name"
+          class="piece-main-img"
+        />
+        <div class="piece-floating-badge">
+          <span class="badge badge-neutral">Archival Piece</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="piece-dossier">
+      <div class="piece-subcat-label">
+        <span>{{ product()?.category?.name }}</span>
+        <span *ngIf="product()?.subcategory"> · {{ product()?.subcategory?.name }}</span>
+        <span *ngIf="product()?.season"> · {{ product()?.season?.name }}</span>
+      </div>
+
+      <h1 class="piece-heading">{{ product()?.name }}</h1>
+
+      <div class="piece-price-box">
+        <span class="piece-price">{{ product()?.price }} EGP</span>
+        <span *ngIf="product()?.stock === 0" class="badge badge-stock badge-out-stock">Sold Out</span>
+        <span *ngIf="product()!.stock > 0 && product()!.stock <= 3" class="badge badge-stock badge-low-stock">
+          Limited Availability: {{ product()?.stock }} Left
+        </span>
+        <span *ngIf="product()!.stock > 3" class="badge badge-stock badge-in-stock">In Stock</span>
+      </div>
+
+      <div class="piece-description">
+        <p>{{ product()?.description }}</p>
+      </div>
+
+      <div class="specs-matrix">
+        <div class="spec-row">
+          <span class="spec-label">Sartorial Category</span>
+          <span class="spec-value">{{ product()?.category?.name }}</span>
+        </div>
+        <div class="spec-row" *ngIf="product()?.subcategory">
+          <span class="spec-label">Atelier Subcategory</span>
+          <span class="spec-value">{{ product()?.subcategory?.name }}</span>
+        </div>
+        <div class="spec-row" *ngIf="product()?.season">
+          <span class="spec-label">Epoch / Season</span>
+          <span class="spec-value">{{ product()?.season?.name }}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Fulfillment</span>
+          <span class="spec-value">White-Glove Delivery (Egypt Nationwide)</span>
+        </div>
+      </div>
+
+      <div class="acquisition-controls">
+        <div class="qty-selector">
+          <button class="qty-btn" (click)="decrementQty()" [disabled]="quantity() <= 1">-</button>
+          <span class="qty-display">{{ quantity() }}</span>
+          <button class="qty-btn" (click)="incrementQty()" [disabled]="quantity() >= (product()?.stock || 1)">+</button>
+        </div>
+
+        <button
+          class="btn btn-primary btn-lg acquire-btn"
+          [disabled]="product()?.stock === 0"
+          (click)="addToBag()"
+        >
+          <span *ngIf="product()?.stock === 0">Currently Sold Out</span>
+          <span *ngIf="product()!.stock > 0">Acquire Silhouette — {{ product()!.price * quantity() }} EGP</span>
+        </button>
+      </div>
+
+      <div class="accordion-group">
+        <div class="accordion-item" [class.open]="openAccordion() === 'delivery'">
+          <button class="accordion-header" (click)="toggleAccordion('delivery')">
+            <span>White-Glove Delivery &amp; Logistics</span>
+            <span class="accordion-icon">{{ openAccordion() === 'delivery' ? '−' : '+' }}</span>
+          </button>
+          <div class="accordion-body" *ngIf="openAccordion() === 'delivery'">
+            Dispatched inside archival garment bags with custom cedar hangers. Courier arrives within 24-48 hours across Cairo &amp; Giza; 2-4 business days for all other governorates. Cash on Delivery is collected upon direct client inspection.
+          </div>
+        </div>
+
+        <div class="accordion-item" [class.open]="openAccordion() === 'guarantee'">
+          <button class="accordion-header" (click)="toggleAccordion('guarantee')">
+            <span>Atelier Guarantee &amp; 14-Day Returns</span>
+            <span class="accordion-icon">{{ openAccordion() === 'guarantee' ? '−' : '+' }}</span>
+          </button>
+          <div class="accordion-body" *ngIf="openAccordion() === 'guarantee'">
+            Every creation comes with a 14-day return and exchange guarantee. If the fit or drape does not surpass your highest expectations, request a refund directly from your client account.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <section class="related-section" *ngIf="relatedProducts().length > 0">
+    <div class="container-wide">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">HARMONIZING CREATIONS</span>
+          <h2 class="section-title">Related Silhouettes</h2>
+        </div>
+        <a
+          [routerLink]="['/shop']"
+          [queryParams]="{ category: product()?.category?._id }"
+          class="section-link"
+        >
+          Explore {{ product()?.category?.name }} &rarr;
+        </a>
+      </div>
+
+      <div class="products-grid-3">
+        <app-product-card
+          *ngFor="let p of relatedProducts(); let idx = index"
+          [product]="p"
+          [index]="idx"
+        ></app-product-card>
+      </div>
+    </div>
+  </section>
+</div>
+
+<ng-template #loadingOrNotFound>
+  <div class="container empty-state" style="margin-top: 100px;">
+    <div *ngIf="loading()">
+      <h2 class="empty-state-title">Retrieving Atelier Dossier...</h2>
+      <p class="empty-state-desc">Loading piece craftsmanship specifications.</p>
+    </div>
+    <div *ngIf="!loading() && error()">
+      <h2 class="empty-state-title">Piece Not Found</h2>
+      <p class="empty-state-desc">This silhouette does not exist or has been archived from our current collection.</p>
+      <a routerLink="/shop" class="btn btn-primary">Return to Catalog</a>
+    </div>
+  </div>
+</ng-template>

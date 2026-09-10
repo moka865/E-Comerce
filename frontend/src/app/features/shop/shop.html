@@ -1,0 +1,260 @@
+<div class="shop-page">
+  <div class="shop-header">
+    <div class="container-wide">
+      <div class="breadcrumbs">
+        <a routerLink="/">Maison</a> &gt; <span>Catalog of Silhouettes</span>
+      </div>
+      <h1 class="shop-title">The Sartorial Catalog</h1>
+      <p class="shop-subtitle">
+        Bespoke silhouettes, architectural tailoring, and rare fiber weaves available for white-glove acquisition.
+      </p>
+    </div>
+  </div>
+
+  <div class="container-wide shop-layout">
+    <aside class="shop-sidebar" [class.open-mobile]="mobileFilterOpen()">
+      <div class="sidebar-header-mobile">
+        <span class="sidebar-title">Refine Atelier Pieces</span>
+        <button class="nav-icon-btn" (click)="toggleMobileFilters()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div *ngIf="hasActiveFilters()" class="clear-all-wrap">
+        <button class="btn btn-secondary btn-full btn-sm" (click)="clearAllFilters()">
+          Reset All Filters
+        </button>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">
+          <span>Category</span>
+          <span *ngIf="selectedCategory()" class="clear-single" (click)="selectCategory('')">Reset</span>
+        </div>
+        <div class="filter-chips">
+          <button
+            class="filter-pill"
+            [class.active]="!selectedCategory()"
+            (click)="selectCategory('')"
+          >
+            All Categories
+          </button>
+          <button
+            *ngFor="let cat of categories()"
+            class="filter-pill"
+            [class.active]="selectedCategory() === cat._id"
+            (click)="selectCategory(cat._id)"
+          >
+            {{ cat.name }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-group" *ngIf="subcategories().length > 0">
+        <div class="filter-title">
+          <span>Subcategory</span>
+          <span *ngIf="selectedSubcategory()" class="clear-single" (click)="selectSubcategory('')">Reset</span>
+        </div>
+        <div class="filter-chips">
+          <button
+            class="filter-pill"
+            [class.active]="!selectedSubcategory()"
+            (click)="selectSubcategory('')"
+          >
+            All Subcategories
+          </button>
+          <button
+            *ngFor="let sub of subcategories()"
+            class="filter-pill"
+            [class.active]="selectedSubcategory() === sub._id"
+            (click)="selectSubcategory(sub._id)"
+          >
+            {{ sub.name }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-group" *ngIf="seasons().length > 0">
+        <div class="filter-title">
+          <span>Season / Epoch</span>
+          <span *ngIf="selectedSeason()" class="clear-single" (click)="selectSeason('')">Reset</span>
+        </div>
+        <div class="filter-chips">
+          <button
+            class="filter-pill"
+            [class.active]="!selectedSeason()"
+            (click)="selectSeason('')"
+          >
+            All Seasons
+          </button>
+          <button
+            *ngFor="let sea of seasons()"
+            class="filter-pill"
+            [class.active]="selectedSeason() === sea._id"
+            (click)="selectSeason(sea._id)"
+          >
+            {{ sea.name }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">Availability</div>
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="onlyInStock()"
+            (change)="toggleInStock($event)"
+          />
+          <span>In Atelier Stock Only</span>
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-title">
+          <span>Price Range</span>
+          <span *ngIf="minPrice() || maxPrice()" class="clear-single" (click)="clearPriceFilter()">Reset</span>
+        </div>
+        <div class="price-inputs">
+          <div class="price-box">
+            <span class="currency-sym">$</span>
+            <input
+              type="number"
+              placeholder="Min"
+              [ngModel]="minPrice()"
+              (ngModelChange)="onMinPriceChange($event)"
+              class="price-input"
+              min="0"
+            />
+          </div>
+          <span class="price-dash">—</span>
+          <div class="price-box">
+            <span class="currency-sym">$</span>
+            <input
+              type="number"
+              placeholder="Max"
+              [ngModel]="maxPrice()"
+              (ngModelChange)="onMaxPriceChange($event)"
+              class="price-input"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="shop-main">
+      <div class="shop-controls-bar">
+        <button class="btn btn-secondary btn-sm mobile-filter-btn" (click)="toggleMobileFilters()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          Filter Pieces
+        </button>
+
+        <div class="product-count-label">
+          Showing <strong>{{ products().length }}</strong> of <strong>{{ paginationMeta()?.total || products().length }}</strong> Silhouettes
+        </div>
+
+        <div class="sort-wrap">
+          <label for="shop-sort" class="sort-label">Sort by:</label>
+          <select id="shop-sort" [ngModel]="currentSort()" (ngModelChange)="onSortChange($event)" class="select-control sort-select">
+            <option value="newest">Newest Additions</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="top-sales">Maison Select</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="active-filter-pills" *ngIf="hasActiveFilters()">
+        <span class="active-pills-label">Active:</span>
+
+        <span class="active-filter-tag" *ngIf="selectedCategory()">
+          Category: {{ getCategoryName(selectedCategory()) }}
+          <button (click)="selectCategory('')">&times;</button>
+        </span>
+
+        <span class="active-filter-tag" *ngIf="selectedSubcategory()">
+          Subcategory: {{ getSubcategoryName(selectedSubcategory()) }}
+          <button (click)="selectSubcategory('')">&times;</button>
+        </span>
+
+        <span class="active-filter-tag" *ngIf="selectedSeason()">
+          Season: {{ getSeasonName(selectedSeason()) }}
+          <button (click)="selectSeason('')">&times;</button>
+        </span>
+
+        <span class="active-filter-tag" *ngIf="onlyInStock()">
+          In Stock Only
+          <button (click)="toggleInStock($event)">&times;</button>
+        </span>
+
+        <span class="active-filter-tag" *ngIf="searchQuery()">
+          "{{ searchQuery() }}"
+          <button (click)="clearSearch()">&times;</button>
+        </span>
+
+        <span class="active-filter-tag" *ngIf="minPrice() || maxPrice()">
+          {{ minPrice() || 0 }} - {{ maxPrice() || '∞' }} EGP
+          <button (click)="clearPriceFilter()">&times;</button>
+        </span>
+      </div>
+
+      <div *ngIf="loading()" class="products-grid-3">
+        <div class="skeleton" style="height: 480px;" *ngFor="let i of [1,2,3,4,5,6]"></div>
+      </div>
+
+      <div *ngIf="!loading() && products().length === 0" class="empty-state">
+        <h3 class="empty-state-title">No Silhouettes Found</h3>
+        <p class="empty-state-desc">
+          No atelier creations match your exact criteria. Please reset filters or broaden your search.
+        </p>
+        <button class="btn btn-primary" (click)="clearAllFilters()">
+          Clear All Filters
+        </button>
+      </div>
+
+      <div *ngIf="!loading() && products().length > 0" class="products-grid-3">
+        <app-product-card
+          *ngFor="let product of products(); let idx = index"
+          [product]="product"
+          [index]="idx"
+        ></app-product-card>
+      </div>
+
+      <div class="pagination-bar" *ngIf="paginationMeta() && paginationMeta()!.totalPages > 1">
+        <button
+          class="btn btn-secondary btn-sm"
+          [disabled]="!paginationMeta()?.hasPreviousPage"
+          (click)="changePage(currentPage() - 1)"
+        >
+          &larr; Previous
+        </button>
+
+        <span class="page-indicator">
+          Page {{ currentPage() }} of {{ paginationMeta()?.totalPages }}
+        </span>
+
+        <button
+          class="btn btn-secondary btn-sm"
+          [disabled]="!paginationMeta()?.hasNextPage"
+          (click)="changePage(currentPage() + 1)"
+        >
+          Next &rarr;
+        </button>
+      </div>
+    </main>
+  </div>
+</div>

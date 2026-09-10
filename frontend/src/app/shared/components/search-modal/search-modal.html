@@ -1,0 +1,59 @@
+<div class="search-backdrop" [class.active]="isOpen()" (click)="close()">
+  <div class="search-panel" (click)="$event.stopPropagation()">
+    <div class="search-header">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        #searchInput
+        type="text"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search silhouettes, virgin wool, overcoats, cashmere..."
+        class="search-input"
+        (keydown.enter)="onEnter()"
+      />
+      <button class="nav-icon-btn" (click)="close()" aria-label="Close search">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="search-results-wrap" *ngIf="searchQuery.trim().length > 1">
+      <div *ngIf="loading()" class="search-loading">Searching Maison Atelier...</div>
+
+      <div *ngIf="!loading() && results().length === 0" class="search-no-results">
+        No creations found for "{{ searchQuery }}". Try searching for "overcoat", "tweed", or "cashmere".
+      </div>
+
+      <div *ngIf="!loading() && results().length > 0" class="search-results-grid">
+        <a
+          *ngFor="let p of results()"
+          [routerLink]="['/product', p.slug]"
+          (click)="close()"
+          class="search-result-card"
+        >
+          <img
+            [src]="productService.getImageUrl(p.image)"
+            [alt]="p.name"
+            class="result-thumb"
+          />
+          <div class="result-details">
+            <span class="result-cat">{{ p.category?.name }} · {{ p.subcategory?.name }}</span>
+            <h5 class="result-title">{{ p.name }}</h5>
+            <span class="result-price">{{ p.price }} EGP</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="view-all-row" *ngIf="results().length > 0">
+        <button class="btn btn-outline btn-sm" (click)="onEnter()">
+          View All Matching Silhouettes &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

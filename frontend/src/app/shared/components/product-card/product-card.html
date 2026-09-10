@@ -1,0 +1,50 @@
+<div class="product-card" *ngIf="product">
+  <div class="product-image-wrap">
+    <a [routerLink]="['/product', product.slug]">
+      <img
+        [src]="productService.getImageUrl(product.image)"
+        [alt]="product.name"
+        class="product-img-main"
+        loading="lazy"
+      />
+    </a>
+
+    <div class="product-badges">
+      <span class="badge badge-neutral">N° {{ getRomanIndex(index) }}</span>
+      <span *ngIf="product.isTopSale" class="badge badge-sale">Maison Select</span>
+      <span *ngIf="product.isNewArrival" class="badge badge-new">New Edition</span>
+      <span *ngIf="product.stock === 0" class="badge badge-stock badge-out-stock">Sold Out</span>
+      <span *ngIf="product.stock > 0 && product.stock <= 3" class="badge badge-stock badge-low-stock">Only {{ product.stock }} Left</span>
+    </div>
+
+    <div class="product-quick-actions">
+      <button class="btn btn-primary btn-sm btn-full" (click)="onQuickViewClick($event)">
+        Examine Piece
+      </button>
+      <button
+        class="btn btn-secondary btn-sm quick-add-btn"
+        (click)="onAddToCartClick($event)"
+        [disabled]="product.stock === 0"
+        title="Add to Bag"
+      >
+        +
+      </button>
+    </div>
+  </div>
+
+  <div class="product-info">
+    <div class="product-category-label">
+      <span>{{ product.category?.name || 'Maison' }}</span>
+      <span *ngIf="product.subcategory"> · {{ product.subcategory?.name }}</span>
+    </div>
+
+    <h3 class="product-title">
+      <a [routerLink]="['/product', product.slug]">{{ product.name }}</a>
+    </h3>
+
+    <div class="product-price-row">
+      <span class="price-current">{{ product.price }} EGP</span>
+      <span *ngIf="product.stock > 0" class="badge badge-stock badge-in-stock">In Stock</span>
+    </div>
+  </div>
+</div>

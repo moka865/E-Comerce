@@ -1,0 +1,353 @@
+.account-page {
+  padding: var(--space-8) 0 var(--space-20);
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--space-10);
+}
+
+.account-tier {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.account-greeting {
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: var(--space-1);
+}
+
+.account-meta {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+}
+
+.account-header-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-10);
+  align-items: flex-start;
+}
+
+.account-tabs-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
+}
+
+.tab-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--black);
+}
+
+.tab-btn.active {
+  background: var(--black);
+  color: var(--white);
+}
+
+.account-content-main {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  padding: var(--space-8);
+}
+
+.tab-heading {
+  font-size: 1.4rem;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.tab-subtext {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.order-card {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+}
+
+.order-card-header {
+  padding: 14px 18px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-id {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.order-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.order-items-box {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-item-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.order-item-img {
+  width: 48px;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  background: var(--white);
+}
+
+.order-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.order-item-name {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.order-item-qty {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.order-item-subtotal {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.order-card-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  background: var(--white);
+}
+
+.order-total {
+  margin-left: 14px;
+  font-size: 1rem;
+}
+
+.timeline-container {
+  padding: 12px 18px;
+  background: var(--white-subtle);
+  border-top: 1px solid var(--border-light);
+}
+
+.timeline-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.timeline-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.t-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  flex: 1;
+}
+
+.t-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--border-color);
+  z-index: 2;
+}
+
+.t-step.done .t-dot {
+  background: var(--black);
+}
+
+.t-name {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.t-step.done .t-name {
+  color: var(--black);
+  font-weight: 600;
+}
+
+.order-actions-bar {
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background: var(--white);
+  gap: 10px;
+}
+
+.refund-pending-chip {
+  font-size: 0.75rem;
+  color: #b45309;
+  font-weight: 600;
+}
+
+.refund-approved-chip {
+  font-size: 0.75rem;
+  color: var(--color-save);
+  font-weight: 600;
+}
+
+.refund-rejected-chip {
+  font-size: 0.75rem;
+  color: var(--color-sale);
+  font-weight: 600;
+}
+
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.saved-address-card {
+  border: 1px solid var(--border-color);
+  padding: var(--space-6);
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.saved-address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.default-badge {
+  background: var(--black);
+  color: var(--white);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  text-transform: uppercase;
+}
+
+.saved-address-body {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-4);
+}
+
+.saved-address-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-addr-btn {
+  color: var(--color-sale);
+}
+
+.new-address-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.new-address-box h4 {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-4);
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.profile-form, .testimonial-form {
+  max-width: 540px;
+}
+
+@media (max-width: 1024px) {
+  .account-grid {
+    grid-template-columns: 1fr;
+  }
+  .account-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .addresses-grid {
+    grid-template-columns: 1fr;
+  }
+}

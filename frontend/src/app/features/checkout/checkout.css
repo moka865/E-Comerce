@@ -1,0 +1,319 @@
+.checkout-page {
+  padding: var(--space-8) 0 var(--space-20);
+}
+
+.checkout-header {
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--space-8);
+}
+
+.breadcrumbs {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.checkout-title {
+  font-size: 2.4rem;
+}
+
+.auth-gate-panel {
+  text-align: center;
+  padding: var(--space-16) var(--space-6);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.empty-monogram {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  letter-spacing: 0.2em;
+  color: var(--border-color);
+  margin-bottom: var(--space-2);
+}
+
+.auth-gate-panel h3 {
+  font-size: 1.6rem;
+  margin-bottom: var(--space-2);
+}
+
+.auth-gate-panel p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: var(--space-6);
+}
+
+.auth-gate-ctas {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+.checkout-section {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  padding: var(--space-8);
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.section-step-title {
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.address-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.address-card {
+  border: 1px solid var(--border-color);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: var(--white);
+}
+
+.address-card:hover {
+  border-color: var(--black);
+}
+
+.address-card.selected {
+  border-color: var(--black);
+  background: var(--bg-secondary);
+  box-shadow: inset 0 0 0 1px var(--black);
+}
+
+.address-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.default-chip {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  background: var(--black);
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.address-text {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.address-details {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.address-fee-indicator {
+  margin-top: var(--space-3);
+  padding-top: 6px;
+  border-top: 1px solid var(--border-light);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.new-address-form-box {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-color);
+}
+
+.form-box-title {
+  font-size: 1rem;
+  margin-bottom: var(--space-4);
+}
+
+.cod-option-card {
+  border: 1px solid var(--black);
+  padding: var(--space-6);
+  background: var(--bg-secondary);
+}
+
+.cod-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.cod-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.checkout-summary-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: var(--space-8);
+  position: sticky;
+  top: 96px;
+}
+
+.summary-heading {
+  font-size: 1.3rem;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.summary-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border-light);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.summary-item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.item-name {
+  color: var(--text-primary);
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-val {
+  font-weight: 500;
+}
+
+.summary-calc-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.grand-total-row {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color);
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.grand-total-val {
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+}
+
+.confirm-order-btn {
+  margin-top: var(--space-8);
+}
+
+.guarantee-box {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-light);
+}
+
+.guarantee-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.order-confirmed-box {
+  text-align: center;
+  padding: var(--space-16) var(--space-6);
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  max-width: 680px;
+  margin: var(--space-10) auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.confirm-icon {
+  color: var(--color-save);
+  margin-bottom: var(--space-4);
+}
+
+.confirm-pretitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.confirm-title {
+  font-size: 2.4rem;
+  margin: var(--space-2) 0 var(--space-4);
+}
+
+.confirm-desc {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: var(--space-8);
+}
+
+.confirm-actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+  .address-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+}

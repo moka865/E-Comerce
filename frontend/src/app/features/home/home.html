@@ -1,0 +1,146 @@
+<section class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <span class="hero-pretitle">MAISON ÉLÉGANCE · AUTUMN / WINTER 2026</span>
+    <h1 class="hero-title">Architectural Form &amp; High Craft</h1>
+    <p class="hero-desc">
+      Conceived in our private atelier using virgin Biella wool, Mongolian cashmere, and artisanal Japanese selvedge denim. Designed to endure for generations.
+    </p>
+    <div class="hero-ctas">
+      <a routerLink="/shop" class="btn btn-primary btn-lg">Explore Silhouettes</a>
+      <a routerLink="/content/about" class="btn btn-secondary btn-lg">Atelier Dossier</a>
+    </div>
+  </div>
+</section>
+
+<section class="section categories-section">
+  <div class="container-wide">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">CURATED ATELIER ARCHIVES</span>
+        <h2 class="section-title">Sartorial Categories</h2>
+      </div>
+      <a routerLink="/shop" class="section-link">View Full Index &rarr;</a>
+    </div>
+
+    <div class="categories-grid" *ngIf="categories().length > 0; else catSkeleton">
+      <a
+        *ngFor="let cat of categories()"
+        [routerLink]="['/shop']"
+        [queryParams]="{ category: cat._id }"
+        class="category-card"
+      >
+        <div class="category-card-bg" [ngStyle]="{ 'background-image': 'url(' + getCategoryBg(cat.slug) + ')' }"></div>
+        <div class="category-card-content">
+          <span class="cat-card-tag">Collection</span>
+          <h3 class="cat-card-title">{{ cat.name }}</h3>
+          <span class="cat-card-explore">Discover Pieces &rarr;</span>
+        </div>
+      </a>
+    </div>
+
+    <ng-template #catSkeleton>
+      <div class="categories-grid">
+        <div class="skeleton" style="height: 380px;" *ngFor="let i of [1, 2, 3, 4]"></div>
+      </div>
+    </ng-template>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container-wide">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">FRESH SILHOUETTE DROPS</span>
+        <h2 class="section-title">New Runway Additions</h2>
+      </div>
+      <a routerLink="/shop" [queryParams]="{ filter: 'new' }" class="section-link">Explore All Drops &rarr;</a>
+    </div>
+
+    <div class="products-grid-3" *ngIf="newArrivals().length > 0; else productsSkeleton">
+      <app-product-card
+        *ngFor="let product of newArrivals(); let idx = index"
+        [product]="product"
+        [index]="idx"
+      ></app-product-card>
+    </div>
+
+    <ng-template #productsSkeleton>
+      <div class="products-grid-3">
+        <div class="skeleton" style="height: 480px;" *ngFor="let i of [1, 2, 3]"></div>
+      </div>
+    </ng-template>
+  </div>
+</section>
+
+<section class="philosophy-section">
+  <div class="container-narrow philosophy-content">
+    <div class="philosophy-monogram">M·É</div>
+    <span class="philosophy-pretitle">THE ATELIER PRINCIPLE</span>
+    <h2 class="philosophy-quote">
+      "True luxury is found in silence — in the drape of virgin wool, the precision of a peak lapel, and the quiet dignity of a piece that outlives every trend."
+    </h2>
+    <div class="philosophy-author">Maison Élégance · Ateliers d’Exception</div>
+  </div>
+</section>
+
+<section class="section" *ngIf="topSales().length > 0">
+  <div class="container-wide">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">MOST COVETED SILHOUETTES</span>
+        <h2 class="section-title">Maison Select</h2>
+      </div>
+      <a routerLink="/shop" [queryParams]="{ filter: 'sale' }" class="section-link">View All Curations &rarr;</a>
+    </div>
+
+    <div class="products-grid-3">
+      <app-product-card
+        *ngFor="let product of topSales(); let idx = index"
+        [product]="product"
+        [index]="idx + 3"
+      ></app-product-card>
+    </div>
+  </div>
+</section>
+
+<section class="section recommendations-section" *ngIf="recommendations().length > 0">
+  <div class="container-wide">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">TAILORED FOR YOUR TASTE</span>
+        <h2 class="section-title">Curated For You</h2>
+      </div>
+    </div>
+
+    <div class="products-grid-3">
+      <app-product-card
+        *ngFor="let product of recommendations(); let idx = index"
+        [product]="product"
+        [index]="idx + 6"
+      ></app-product-card>
+    </div>
+  </div>
+</section>
+
+<section class="section testimonials-section" *ngIf="testimonials().length > 0">
+  <div class="container">
+    <div class="section-header" style="text-align: center; justify-content: center; flex-direction: column; align-items: center;">
+      <span class="section-tag">CLIENT PATRONAGE</span>
+      <h2 class="section-title">The Gazette of Acclaim</h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div *ngFor="let t of testimonials()" class="testimonial-card">
+        <div class="testimonial-stars">
+          <span *ngFor="let s of [1,2,3,4,5]">★</span>
+        </div>
+        <p class="testimonial-msg">"{{ t.message }}"</p>
+        <div class="testimonial-author">
+          <strong>{{ t.clientName }}</strong>
+          <span class="verified-badge">Verified Patron</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

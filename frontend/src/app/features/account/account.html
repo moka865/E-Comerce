@@ -1,0 +1,412 @@
+<div class="account-page">
+  <div class="container-wide">
+    <div class="account-header">
+      <div>
+        <span class="account-tier">ATELIER PATRON · CLIENT PROFILE</span>
+        <h1 class="account-greeting">Welcome, {{ authService.currentUser()?.name }}</h1>
+        <p class="account-meta">
+          {{ authService.currentUser()?.email }} · {{ authService.currentUser()?.mobilePhone }}
+        </p>
+      </div>
+      <div class="account-header-actions">
+        <a *ngIf="authService.isAdmin()" routerLink="/admin" class="btn btn-outline btn-sm">
+          Atelier Back-Office Dashboard
+        </a>
+        <button (click)="authService.logout()" class="btn btn-secondary btn-sm">
+          Sign Out
+        </button>
+      </div>
+    </div>
+
+    <div class="account-grid">
+      <aside class="account-tabs-sidebar">
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'orders'"
+          (click)="setTab('orders')"
+        >
+          Order History ({{ orders().length }})
+        </button>
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'addresses'"
+          (click)="setTab('addresses')"
+        >
+          Saved Addresses ({{ addresses().length }})
+        </button>
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'profile'"
+          (click)="setTab('profile')"
+        >
+          Client Profile Details
+        </button>
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'testimonial'"
+          (click)="setTab('testimonial')"
+        >
+          Submit Atelier Gazette Review
+        </button>
+      </aside>
+
+      <main class="account-content-main">
+        <div *ngIf="activeTab() === 'orders'">
+          <h3 class="tab-heading">Atelier Acquisitions &amp; Order History</h3>
+
+          <div *ngIf="loadingOrders()" class="skeleton" style="height: 300px;"></div>
+
+          <div *ngIf="!loadingOrders() && orders().length === 0" class="empty-state">
+            <h4 class="empty-state-title">No Prior Acquisitions</h4>
+            <p class="empty-state-desc">You have not placed any orders yet. Discover our latest runway additions.</p>
+            <a routerLink="/shop" class="btn btn-primary btn-sm">Explore Silhouettes</a>
+          </div>
+
+          <div *ngIf="!loadingOrders() && orders().length > 0" class="orders-list">
+            <div *ngFor="let ord of orders()" class="order-card">
+              <div class="order-card-header">
+                <div>
+                  <span class="order-id">Order #{{ ord._id.slice(-8).toUpperCase() }}</span>
+                  <span class="order-date">Placed on {{ ord.createdAt | date:'mediumDate' }}</span>
+                </div>
+                <div class="order-status-badge-wrap">
+                  <span class="badge" [ngClass]="getStatusBadgeClass(ord.status)">
+                    {{ ord.status | uppercase }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="order-items-box">
+                <div *ngFor="let it of ord.items" class="order-item-row">
+                  <img
+                    [src]="productService.getImageUrl(getItemImage(it))"
+                    alt="piece"
+                    class="order-item-img"
+                  />
+                  <div class="order-item-info">
+                    <span class="order-item-name">{{ it.productName }}</span>
+                    <span class="order-item-qty">Quantity: {{ it.quantity }} &times; {{ it.priceAtOrder }} EGP</span>
+                  </div>
+                  <span class="order-item-subtotal">{{ it.priceAtOrder * it.quantity }} EGP</span>
+                </div>
+              </div>
+
+              <div class="order-card-footer">
+                <div class="order-dest-info">
+                  <strong>Destination:</strong> {{ ord.deliveryAddress?.address }}, {{ ord.deliveryAddress?.city }}, {{ ord.deliveryAddress?.governorate }}
+                </div>
+                <div class="order-financial-info">
+                  <span>Delivery Fee: {{ ord.deliveryFee }} EGP</span>
+                  <span class="order-total">Total: <strong>{{ ord.totalPrice }} EGP</strong></span>
+                </div>
+              </div>
+
+              <div class="timeline-container">
+                <span class="timeline-label">Atelier Tracking Progression:</span>
+                <div class="timeline-steps">
+                  <div class="t-step" [class.done]="isStepDone(ord.status, 'pending')">
+                    <span class="t-dot"></span>
+                    <span class="t-name">Pending</span>
+                  </div>
+                  <div class="t-step" [class.done]="isStepDone(ord.status, 'preparing')">
+                    <span class="t-dot"></span>
+                    <span class="t-name">Preparing</span>
+                  </div>
+                  <div class="t-step" [class.done]="isStepDone(ord.status, 'confirmed')">
+                    <span class="t-dot"></span>
+                    <span class="t-name">Confirmed</span>
+                  </div>
+                  <div class="t-step" [class.done]="isStepDone(ord.status, 'shipped')">
+                    <span class="t-dot"></span>
+                    <span class="t-name">Shipped</span>
+                  </div>
+                  <div class="t-step" [class.done]="isStepDone(ord.status, 'received')">
+                    <span class="t-dot"></span>
+                    <span class="t-name">Delivered</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="order-actions-bar">
+                <button
+                  *ngIf="ord.status === 'pending' || ord.status === 'preparing'"
+                  class="btn btn-secondary btn-sm cancel-order-btn"
+                  (click)="onCancelOrder(ord._id)"
+                >
+                  Cancel Acquisition
+                </button>
+
+                <div *ngIf="ord.status === 'received' && ord.refundStatus === 'none'">
+                  <button
+                    class="btn btn-outline btn-sm"
+                    (click)="openRefundModal(ord._id)"
+                  >
+                    Request Atelier Refund (14-Day Guarantee)
+                  </button>
+                </div>
+
+                <span *ngIf="ord.refundStatus === 'requested'" class="refund-pending-chip">
+                  Refund Review In Progress
+                </span>
+                <span *ngIf="ord.refundStatus === 'approved'" class="refund-approved-chip">
+                  Refund Approved
+                </span>
+                <span *ngIf="ord.refundStatus === 'rejected'" class="refund-rejected-chip">
+                  Refund Declined
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="activeTab() === 'addresses'">
+          <div class="section-title-row">
+            <h3 class="tab-heading">Saved Destination Addresses</h3>
+            <button class="btn btn-primary btn-sm" (click)="showNewAddress.set(true)">
+              + Add New Address
+            </button>
+          </div>
+
+          <div *ngIf="showNewAddress()" class="new-address-box">
+            <h4>Add Egyptian Address</h4>
+            <form (submit)="saveNewAddress($event)" novalidate>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Governorate *</label>
+                  <select
+                    [(ngModel)]="newAddressData.governorate"
+                    name="gov"
+                    class="select-control"
+                    [class.has-error]="addressSubmitted() && !newAddressData.governorate"
+                    required
+                  >
+                    <option value="" disabled>Select Governorate</option>
+                    <option *ngFor="let f of deliveryFees()" [value]="f.governorate">
+                      {{ f.governorate }} (Delivery: {{ f.fee }} EGP)
+                    </option>
+                  </select>
+                  <span class="form-error" *ngIf="addressSubmitted() && !newAddressData.governorate">
+                    Governorate is required
+                  </span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">City / District *</label>
+                  <input
+                    type="text"
+                    [(ngModel)]="newAddressData.city"
+                    name="city"
+                    class="input-text"
+                    [class.has-error]="addressSubmitted() && !newAddressData.city.trim()"
+                    required
+                  />
+                  <span class="form-error" *ngIf="addressSubmitted() && !newAddressData.city.trim()">
+                    City / District is required
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Street Address *</label>
+                <input
+                  type="text"
+                  [(ngModel)]="newAddressData.address"
+                  name="addr"
+                  class="input-text"
+                  [class.has-error]="addressSubmitted() && !newAddressData.address.trim()"
+                  required
+                />
+                <span class="form-error" *ngIf="addressSubmitted() && !newAddressData.address.trim()">
+                  Street address is required
+                </span>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Building / Apartment</label>
+                  <input type="text" [(ngModel)]="newAddressData.buildingDetails" name="bld" class="input-text" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Area / Landmark</label>
+                  <input type="text" [(ngModel)]="newAddressData.area" name="area" class="input-text" />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-sm">Save Address</button>
+                <button type="button" class="btn btn-secondary btn-sm" (click)="showNewAddress.set(false)">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="addresses-grid">
+            <div *ngFor="let addr of addresses()" class="saved-address-card">
+              <div class="saved-address-header">
+                <strong>{{ addr.governorate }} · {{ addr.city }}</strong>
+                <span *ngIf="addr.isDefault" class="default-badge">Default</span>
+              </div>
+              <p class="saved-address-body">
+                {{ addr.address }}<br>
+                <span *ngIf="addr.buildingDetails">{{ addr.buildingDetails }}<br></span>
+                <span *ngIf="addr.area">{{ addr.area }}</span>
+              </p>
+              <div class="saved-address-actions">
+                <button
+                  *ngIf="!addr.isDefault && addr._id"
+                  class="btn btn-ghost btn-sm"
+                  (click)="onSetDefaultAddress(addr._id)"
+                >
+                  Make Default
+                </button>
+                <button
+                  *ngIf="addr._id"
+                  class="btn btn-ghost btn-sm delete-addr-btn"
+                  (click)="onDeleteAddress(addr._id)"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="activeTab() === 'profile'">
+          <h3 class="tab-heading">Client Profile &amp; Preferences</h3>
+          <form (submit)="onUpdateProfile($event)" class="profile-form" novalidate>
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input
+                type="text"
+                [(ngModel)]="profileData.name"
+                name="name"
+                class="input-text"
+                [class.has-error]="profileSubmitted() && !profileData.name.trim()"
+                required
+              />
+              <span class="form-error" *ngIf="profileSubmitted() && !profileData.name.trim()">
+                Full name is required
+              </span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address *</label>
+              <input
+                type="email"
+                [(ngModel)]="profileData.email"
+                name="email"
+                class="input-text"
+                [class.has-error]="profileSubmitted() && (!profileData.email.trim() || !isValidEmail(profileData.email))"
+                required
+              />
+              <span class="form-error" *ngIf="profileSubmitted() && !profileData.email.trim()">
+                Email is required
+              </span>
+              <span class="form-error" *ngIf="profileSubmitted() && profileData.email.trim() && !isValidEmail(profileData.email)">
+                Please enter a valid email address
+              </span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mobile Phone (Primary Identifier)</label>
+              <input type="text" [value]="authService.currentUser()?.mobilePhone" class="input-text" disabled />
+              <small class="form-hint">Mobile number is your account identification key.</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" [(ngModel)]="profileData.dateOfBirth" name="dob" class="input-text" />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="savingProfile()">
+              {{ savingProfile() ? 'Saving Changes...' : 'Save Profile Details' }}
+            </button>
+          </form>
+        </div>
+
+        <div *ngIf="activeTab() === 'testimonial'">
+          <h3 class="tab-heading">Share Your Atelier Experience</h3>
+          <p class="tab-subtext">Patron testimonials are reviewed and published in the Maison Gazette.</p>
+
+          <form (submit)="onSubmitTestimonial($event)" class="testimonial-form" novalidate>
+            <div class="form-group">
+              <label class="form-label">Patron Display Name *</label>
+              <input
+                type="text"
+                [(ngModel)]="testimonialData.clientName"
+                name="cName"
+                class="input-text"
+                [class.has-error]="testimonialSubmitted() && !testimonialData.clientName.trim()"
+                required
+              />
+              <span class="form-error" *ngIf="testimonialSubmitted() && !testimonialData.clientName.trim()">
+                Patron display name is required
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Rating (Stars) *</label>
+              <select [(ngModel)]="testimonialData.rating" name="cRating" class="select-control">
+                <option [value]="5">5 Stars — Sublime Craftsmanship</option>
+                <option [value]="4">4 Stars — Exceptional Quality</option>
+                <option [value]="3">3 Stars — Met Expectations</option>
+                <option [value]="2">2 Stars — Needs Refinement</option>
+                <option [value]="1">1 Star — Unsatisfactory</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Your Review / Impression *</label>
+              <textarea
+                [(ngModel)]="testimonialData.message"
+                name="cMsg"
+                rows="4"
+                class="textarea-control"
+                [class.has-error]="testimonialSubmitted() && (!testimonialData.message.trim() || testimonialData.message.trim().length < 10)"
+                placeholder="Describe the fabric quality, drape, and delivery experience..."
+                required
+              ></textarea>
+              <span class="form-error" *ngIf="testimonialSubmitted() && !testimonialData.message.trim()">
+                Review message is required
+              </span>
+              <span class="form-error" *ngIf="testimonialSubmitted() && testimonialData.message.trim() && testimonialData.message.trim().length < 10">
+                Review message must be at least 10 characters
+              </span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="submittingTestimonial()">
+              {{ submittingTestimonial() ? 'Submitting to Atelier...' : 'Submit Gazette Review' }}
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" [class.active]="refundModalOpen()" (click)="closeRefundModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3>Request Atelier Refund</h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 8px 0 16px;">
+          Under the Maison Guarantee, unworn garments with intact seals may be refunded within 14 days of receipt.
+        </p>
+
+        <form (submit)="submitRefundRequest($event)" novalidate>
+          <div class="form-group">
+            <label class="form-label">Reason for Refund *</label>
+            <textarea
+              [(ngModel)]="refundReason"
+              name="refundReason"
+              rows="4"
+              class="textarea-control"
+              [class.has-error]="refundSubmitted() && !refundReason.trim()"
+              placeholder="Please state if sizing, drape, or styling required adjustment..."
+              required
+            ></textarea>
+            <span class="form-error" *ngIf="refundSubmitted() && !refundReason.trim()">
+              Reason for refund is required
+            </span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-sm">Submit Refund Request</button>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="closeRefundModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

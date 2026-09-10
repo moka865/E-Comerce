@@ -1,0 +1,65 @@
+<div class="modal-backdrop" [class.active]="isOpen()" (click)="close()">
+  <div class="modal-content quick-view-box" (click)="$event.stopPropagation()" *ngIf="product()">
+    <button class="modal-close-btn" (click)="close()" aria-label="Close modal">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="quick-view-grid">
+      <div class="quick-view-img-wrap">
+        <img
+          [src]="productService.getImageUrl(product()?.image)"
+          [alt]="product()?.name"
+          class="quick-view-img"
+        />
+      </div>
+
+      <div class="quick-view-info">
+        <div class="category-meta">
+          {{ product()?.category?.name }} · {{ product()?.subcategory?.name }}
+        </div>
+
+        <h2 class="piece-title">{{ product()?.name }}</h2>
+
+        <div class="price-stock-row">
+          <span class="piece-price">{{ product()?.price }} EGP</span>
+          <span *ngIf="product()?.stock === 0" class="badge badge-stock badge-out-stock">Sold Out</span>
+          <span *ngIf="product()!.stock > 0 && product()!.stock <= 3" class="badge badge-stock badge-low-stock">
+            Only {{ product()?.stock }} Pieces Left
+          </span>
+          <span *ngIf="product()!.stock > 3" class="badge badge-stock badge-in-stock">In Atelier Stock</span>
+        </div>
+
+        <p class="piece-desc">
+          {{ product()?.description }}
+        </p>
+
+        <div class="action-row">
+          <div class="qty-box">
+            <button (click)="decrementQty()" class="qty-btn" [disabled]="selectedQty() <= 1">-</button>
+            <span class="qty-num">{{ selectedQty() }}</span>
+            <button (click)="incrementQty()" class="qty-btn" [disabled]="selectedQty() >= (product()?.stock || 1)">+</button>
+          </div>
+
+          <button
+            class="btn btn-primary btn-full"
+            [disabled]="product()?.stock === 0"
+            (click)="addToBag()"
+          >
+            Add to Bag
+          </button>
+        </div>
+
+        <a
+          [routerLink]="['/product', product()?.slug]"
+          (click)="close()"
+          class="view-details-link"
+        >
+          View Full Atelier Dossier &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

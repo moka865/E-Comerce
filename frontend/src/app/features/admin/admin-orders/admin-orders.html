@@ -1,0 +1,87 @@
+<div class="admin-orders-page">
+  <div class="header-row">
+    <div>
+      <span class="sub-heading">FULFILLMENT DISPATCH</span>
+      <h1 class="page-heading">Acquisitions &amp; Order Pipeline</h1>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Destination</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Refund State</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ord of orders()">
+          <td>
+            <strong>#{{ ord._id.slice(-8).toUpperCase() }}</strong><br>
+            <small style="color: var(--text-muted);">{{ ord.createdAt | date:'short' }}</small>
+          </td>
+
+          <td>
+            <strong>{{ ord.deliveryAddress?.governorate }}</strong><br>
+            <small style="color: var(--text-secondary);">{{ ord.deliveryAddress?.address }}, {{ ord.deliveryAddress?.city }}</small>
+          </td>
+
+          <td>
+            <div *ngFor="let it of ord.items">
+              {{ it.productName }} &times; {{ it.quantity }}
+            </div>
+          </td>
+
+          <td>
+            <strong>{{ ord.totalPrice }} EGP</strong><br>
+            <small style="color: var(--text-muted);">COD Fee: {{ ord.deliveryFee }} EGP</small>
+          </td>
+
+          <td>
+            <select
+              [ngModel]="ord.status"
+              (ngModelChange)="onUpdateStatus(ord._id, $event)"
+              class="select-control status-select"
+            >
+              <option value="pending">Pending</option>
+              <option value="preparing">Preparing</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="shipped">Shipped</option>
+              <option value="received">Received</option>
+              <option value="canceled">Canceled</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </td>
+
+          <td>
+            <span *ngIf="ord.refundStatus === 'none'" class="refund-badge-none">—</span>
+            <div *ngIf="ord.refundStatus === 'requested'" class="refund-req-box">
+              <span class="refund-badge-req">Refund Requested</span>
+              <p class="refund-reason">"{{ ord.refundReason }}"</p>
+              <div class="refund-buttons">
+                <button class="btn btn-primary btn-sm" (click)="onReviewRefund(ord._id, 'approved')">Approve</button>
+                <button class="btn btn-secondary btn-sm" (click)="onReviewRefund(ord._id, 'rejected')">Decline</button>
+              </div>
+            </div>
+            <span *ngIf="ord.refundStatus === 'approved'" class="badge badge-in-stock">Approved</span>
+            <span *ngIf="ord.refundStatus === 'rejected'" class="badge badge-out-stock">Declined</span>
+          </td>
+
+          <td>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">
+              History: {{ ord.statusHistory?.length || 1 }} logs
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="orders().length === 0">
+          <td colspan="7" style="text-align: center; padding: 32px;">No orders recorded in atelier dispatch.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

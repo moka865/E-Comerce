@@ -1,0 +1,114 @@
+<div
+  class="drawer-backdrop"
+  [class.active]="cartService.isDrawerOpen()"
+  (click)="cartService.closeDrawer()"
+></div>
+
+<div class="drawer-panel" [class.active]="cartService.isDrawerOpen()">
+  <div class="drawer-header">
+    <span class="drawer-title">Atelier Bag ({{ cartService.totalCount() }})</span>
+    <button class="nav-icon-btn" (click)="cartService.closeDrawer()" aria-label="Close Bag">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+    <div *ngIf="cartService.items().length === 0" class="drawer-empty">
+      <div class="empty-monogram">M·É</div>
+      <h4>Your Atelier Bag is Empty</h4>
+      <p>Explore our curated architectural tailoring and cashmere drops.</p>
+      <a routerLink="/shop" (click)="cartService.closeDrawer()" class="btn btn-outline btn-sm">
+        Discover Silhouettes
+      </a>
+    </div>
+
+    <div *ngFor="let item of cartService.items()" class="cart-item-row">
+      <img
+        [src]="productService.getImageUrl(item.product?.image)"
+        [alt]="item.product?.name"
+        class="cart-item-img"
+      />
+
+      <div class="cart-item-details">
+        <div class="cart-item-header">
+          <h4 class="cart-item-title">{{ item.product?.name }}</h4>
+          <button
+            class="remove-btn"
+            (click)="cartService.removeItem(item)"
+            title="Remove item"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="cart-item-cat">
+          {{ item.product?.category?.name }} · {{ item.product?.subcategory?.name }}
+        </div>
+
+        <div class="cart-item-bottom">
+          <div class="qty-control">
+            <button
+              class="qty-btn"
+              (click)="cartService.updateQuantity(item, item.quantity - 1)"
+              title="Decrease"
+            >
+              -
+            </button>
+            <span class="qty-val">{{ item.quantity }}</span>
+            <button
+              class="qty-btn"
+              (click)="cartService.updateQuantity(item, item.quantity + 1)"
+              [disabled]="item.product?.stock <= item.quantity"
+              title="Increase"
+            >
+              +
+            </button>
+          </div>
+
+          <span class="cart-item-price">
+            {{ (item.priceAtCart || item.product?.price || 0) * item.quantity }} EGP
+          </span>
+        </div>
+
+        <div *ngIf="item.isPriceChanged" class="price-change-alert">
+          <span>Item price was updated in the catalog.</span>
+          <button
+            *ngIf="item._id"
+            class="btn btn-sm btn-outline"
+            style="padding: 2px 6px; font-size: 0.68rem;"
+            (click)="cartService.acceptPriceChange(item._id)"
+          >
+            Accept Price
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-footer" *ngIf="cartService.items().length > 0">
+    <div class="subtotal-row">
+      <span class="subtotal-label">Subtotal</span>
+      <span class="subtotal-val">{{ cartService.totalPrice() }} EGP</span>
+    </div>
+    <p class="delivery-notice">Complimentary white-glove packaging. Delivery fee calculated at checkout.</p>
+    <div class="drawer-actions">
+      <a
+        routerLink="/checkout"
+        (click)="cartService.closeDrawer()"
+        class="btn btn-primary btn-full"
+      >
+        Proceed to Checkout
+      </a>
+      <a
+        routerLink="/cart"
+        (click)="cartService.closeDrawer()"
+        class="btn btn-secondary btn-full btn-sm"
+      >
+        View Detailed Bag
+      </a>
+    </div>
+  </div>
+</div>

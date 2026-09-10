@@ -1,0 +1,160 @@
+<div class="admin-users-page">
+  <div class="header-row">
+    <div>
+      <span class="sub-heading">CLIENT DIRECTORY</span>
+      <h1 class="page-heading">Atelier Patrons &amp; Accounts</h1>
+    </div>
+    <div class="header-stats" *ngIf="pagination()">
+      <span class="total-badge">{{ pagination()?.total || 0 }} Patrons Total</span>
+    </div>
+  </div>
+
+  <div class="search-toolbar">
+    <div class="search-input-wrap">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="text"
+        [ngModel]="searchQuery"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Search users by name or email..."
+        class="search-field"
+        aria-label="Search users by name or email"
+      />
+      <button
+        *ngIf="searchQuery"
+        type="button"
+        class="clear-search-btn"
+        (click)="clearSearch()"
+        aria-label="Clear search"
+      >
+        &times;
+      </button>
+    </div>
+
+    <div class="toolbar-info" *ngIf="isSearchActive()">
+      <span>Filtered by: <strong>"{{ searchQuery }}"</strong></span>
+      <button class="btn btn-ghost btn-sm" (click)="clearSearch()">Reset Filter</button>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <div *ngIf="loading()" class="table-loading-bar">
+      <div class="loading-progress"></div>
+    </div>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Patron Name</th>
+          <th>Email</th>
+          <th>Egyptian Mobile</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Enrolled</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of users()">
+          <td>
+            <strong>{{ u.name }}</strong>
+          </td>
+          <td>
+            <a [href]="'mailto:' + u.email" class="email-link">{{ u.email }}</a>
+          </td>
+          <td><code>{{ u.mobilePhone }}</code></td>
+          <td>
+            <span class="role-chip" [class.admin]="u.role === 'admin'">
+              {{ u.role | uppercase }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="u.isBlocked ? 'badge-out-stock' : 'badge-in-stock'">
+              {{ u.isBlocked ? 'Blocked' : 'Active' }}
+            </span>
+          </td>
+          <td>{{ u.createdAt | date:'mediumDate' }}</td>
+          <td>
+            <div class="actions-cell">
+              <button
+                *ngIf="!u.isBlocked && u.role !== 'admin'"
+                type="button"
+                class="btn btn-ghost btn-sm text-danger"
+                (click)="onBlockUser(u)"
+              >
+                Block
+              </button>
+
+              <button
+                *ngIf="u.isBlocked"
+                type="button"
+                class="btn btn-ghost btn-sm text-success"
+                (click)="onUnblockUser(u)"
+              >
+                Unblock
+              </button>
+
+              <span *ngIf="u.role === 'admin'" class="protected-tag">
+                Protected
+              </span>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="!loading() && users().length === 0 && isSearchActive()">
+          <td colspan="7">
+            <div class="empty-state-inner">
+              <p class="empty-title">No users found matching your search.</p>
+              <p class="empty-subtitle">We could not find any accounts matching "{{ searchQuery }}".</p>
+              <button type="button" class="btn btn-secondary btn-sm" (click)="clearSearch()">
+                Clear Search
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="!loading() && users().length === 0 && !isSearchActive()">
+          <td colspan="7">
+            <div class="empty-state-inner">
+              <p class="empty-title">No users enrolled.</p>
+              <p class="empty-subtitle">There are currently no customer or admin profiles in the directory.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-footer" *ngIf="pagination() && pagination()!.total > 0">
+    <div class="pagination-meta">
+      Showing <strong>{{ getStartRecord() }}</strong>–<strong>{{ getEndRecord() }}</strong> of <strong>{{ pagination()?.total }}</strong> patrons
+    </div>
+
+    <div class="pagination-actions" *ngIf="pagination()!.totalPages > 1">
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm"
+        [disabled]="!pagination()?.hasPreviousPage || loading()"
+        (click)="goToPage(currentPage - 1)"
+      >
+        &larr; Previous
+      </button>
+
+      <span class="page-indicator">
+        Page {{ currentPage }} of {{ pagination()?.totalPages }}
+      </span>
+
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm"
+        [disabled]="!pagination()?.hasNextPage || loading()"
+        (click)="goToPage(currentPage + 1)"
+      >
+        Next &rarr;
+      </button>
+    </div>
+  </div>
+</div>

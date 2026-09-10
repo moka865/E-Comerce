@@ -1,0 +1,128 @@
+<div class="cart-page">
+  <div class="container-wide">
+    <div class="cart-header">
+      <div class="breadcrumbs">
+        <a routerLink="/">Maison</a> &gt; <span>Atelier Bag</span>
+      </div>
+      <h1 class="cart-title">Your Sartorial Bag</h1>
+      <p class="cart-subtitle">Review your selected bespoke silhouettes before proceeding to white-glove checkout.</p>
+    </div>
+
+    <div class="cart-grid" *ngIf="cartService.items().length > 0; else emptyBag">
+      <div class="cart-table-panel">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Piece</th>
+              <th>Classification</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of cartService.items()">
+              <td class="piece-td">
+                <div class="piece-cell">
+                  <img
+                    [src]="productService.getImageUrl(item.product?.image)"
+                    [alt]="item.product?.name"
+                    class="table-thumb"
+                  />
+                  <div>
+                    <a [routerLink]="['/product', item.product?.slug]" class="table-piece-name">
+                      {{ item.product?.name }}
+                    </a>
+                    <div *ngIf="item.isPriceChanged" class="price-alert-pill">
+                      Price updated.
+                      <button *ngIf="item._id" (click)="cartService.acceptPriceChange(item._id)">
+                        Accept
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="meta-td">
+                {{ item.product?.category?.name }}<br>
+                <small>{{ item.product?.subcategory?.name }}</small>
+              </td>
+
+              <td class="price-td">
+                {{ item.priceAtCart || item.product?.price }} EGP
+              </td>
+
+              <td class="qty-td">
+                <div class="qty-control">
+                  <button class="qty-btn" (click)="cartService.updateQuantity(item, item.quantity - 1)">-</button>
+                  <span class="qty-val">{{ item.quantity }}</span>
+                  <button
+                    class="qty-btn"
+                    (click)="cartService.updateQuantity(item, item.quantity + 1)"
+                    [disabled]="item.product?.stock <= item.quantity"
+                  >+</button>
+                </div>
+              </td>
+
+              <td class="total-td">
+                {{ (item.priceAtCart || item.product?.price || 0) * item.quantity }} EGP
+              </td>
+
+              <td class="remove-td">
+                <button class="remove-icon-btn" (click)="cartService.removeItem(item)" title="Remove piece">
+                  &times;
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="cart-table-footer">
+          <a routerLink="/shop" class="btn btn-secondary btn-sm">&larr; Continue Discovering Pieces</a>
+          <button class="btn btn-ghost btn-sm" (click)="cartService.clearCart()">Clear Bag</button>
+        </div>
+      </div>
+
+      <aside class="summary-card">
+        <h3 class="summary-title">Acquisition Summary</h3>
+
+        <div class="summary-row">
+          <span>Silhouettes Subtotal</span>
+          <span>{{ cartService.totalPrice() }} EGP</span>
+        </div>
+
+        <div class="summary-row">
+          <span>White-Glove Fulfillment</span>
+          <span class="calculated-note">Calculated at Checkout</span>
+        </div>
+
+        <div class="summary-row total-row">
+          <span>Total Value</span>
+          <span class="total-val">{{ cartService.totalPrice() }} EGP</span>
+        </div>
+
+        <p class="summary-cod-notice">
+          Complimentary luxury packaging with custom cedar hanger and archival dust bag. Cash on Delivery upon inspection.
+        </p>
+
+        <a routerLink="/checkout" class="btn btn-primary btn-full btn-lg">
+          Proceed to Delivery Checkout
+        </a>
+      </aside>
+    </div>
+
+    <ng-template #emptyBag>
+      <div class="empty-state">
+        <div class="empty-monogram">M·É</div>
+        <h2 class="empty-state-title">Your Sartorial Bag is Empty</h2>
+        <p class="empty-state-desc">
+          Discover our latest drops of architectural virgin wool overcoats, floating canvas tailoring, and rare Mongolian knitwear.
+        </p>
+        <a routerLink="/shop" class="btn btn-primary btn-lg">
+          Explore Silhouettes
+        </a>
+      </div>
+    </ng-template>
+  </div>
+</div>

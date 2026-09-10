@@ -1,0 +1,13 @@
+<app-toast></app-toast>
+
+<app-cart-drawer></app-cart-drawer>
+<app-quick-view-modal></app-quick-view-modal>
+<app-search-modal></app-search-modal>
+
+<app-navbar *ngIf="!isAdminRoute()"></app-navbar>
+
+<main [class.client-layout]="!isAdminRoute()">
+  <router-outlet></router-outlet>
+</main>
+
+<app-footer *ngIf="!isAdminRoute()"></app-footer>

@@ -1,0 +1,50 @@
+<div class="admin-testimonials-page">
+  <div class="header-row">
+    <div>
+      <span class="sub-heading">PUBLIC RELATIONS</span>
+      <h1 class="page-heading">Gazette Patron Reviews</h1>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Patron Name</th>
+          <th>Rating</th>
+          <th>Review / Message</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of testimonials()">
+          <td><strong>{{ t.clientName }}</strong></td>
+          <td><span style="color: #eab308;">{{ getStars(t.rating) }}</span></td>
+          <td style="max-width: 420px; font-style: italic;">
+            "{{ t.message }}"
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getStatusBadge(t.status)">
+              {{ t.status | uppercase }}
+            </span>
+          </td>
+          <td>{{ t.createdAt | date:'mediumDate' }}</td>
+          <td>
+            <div class="action-buttons" *ngIf="t.status === 'pending'">
+              <button class="btn btn-primary btn-sm" (click)="onApprove(t._id)">Publish</button>
+              <button class="btn btn-secondary btn-sm" (click)="onDecline(t._id)">Decline</button>
+            </div>
+            <span *ngIf="t.status !== 'pending'" style="font-size: 0.75rem; color: var(--text-muted);">
+              Decided
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="testimonials().length === 0">
+          <td colspan="6" style="text-align: center; padding: 32px;">No reviews submitted.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
